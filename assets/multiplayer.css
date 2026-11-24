@@ -1,0 +1,77 @@
+/* Boundary Club - Multiplayer Styles */
+
+.mp-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.625rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(17, 24, 39, 0.7);
+    color: #e5e7eb;
+}
+
+.mp-status-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background-color: #22c55e;
+    box-shadow: 0 0 6px #22c55e;
+}
+
+.mp-status-dot.disconnected {
+    background-color: #ef4444;
+    box-shadow: 0 0 6px #ef4444;
+}
+
+.mp-panel {
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border-radius: 1rem;
+    width: 100%;
+    max-width: 38rem;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.mp-franchise-card {
+    transition: all 0.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mp-franchise-card:hover:not(.claimed-by-other) {
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
+}
+
+.mp-franchise-card.claimed-by-me {
+    border-color: #a855f7;
+    background: rgba(168, 85, 247, 0.12);
+}
+
+.mp-franchise-card.claimed-by-other {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.bid-team-card-btn.team-disabled {
+    opacity: 0.45;
+    filter: grayscale(0.5);
+    cursor: not-allowed;
+}
+
+.bid-team-card-btn.team-mine {
+    outline: 2px solid #a855f7;
+    outline-offset: 2px;
+}
+
+.mp-room-code-tag {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+}

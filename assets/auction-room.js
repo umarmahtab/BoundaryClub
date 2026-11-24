@@ -148,6 +148,7 @@ element('applyLogo').addEventListener('click', () => {
 });
 
 let selectedBidStep = 1;
+window.selectedBidStep = 1;
 function nextOfferAmount() {
     let amount = appState.currentBid;
     if (appState.highestBidder !== null) {
@@ -157,6 +158,7 @@ function nextOfferAmount() {
 }
 function selectBidStep(step, refresh = true) {
     selectedBidStep = step;
+    window.selectedBidStep = step;
     document.querySelectorAll('[data-step]').forEach(btn => btn.setAttribute('aria-pressed', Number(btn.dataset.step) === step));
     if (refresh && appState.phase === 'bidding') updateControls(false);
 }

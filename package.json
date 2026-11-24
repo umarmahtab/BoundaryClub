@@ -1,0 +1,17 @@
+{
+  "name": "boundaryclub",
+  "version": "5.0.0",
+  "description": "Boundary Club - Real-time Multiplayer Cricket Auction",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/e2e_dom_simulation.js && node test/multiplayer.test.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "socket.io-client": "^4.7.5"
+  }
+}

@@ -1,13 +1,14 @@
 const fs = require('fs');
-const content = fs.readFileSync('auction.html', 'utf8');
+const content = fs.readFileSync('index.html', 'utf8');
 
 console.log('--- 1. PLAYER DATASET VERIFICATION ---');
 const playerMatch = content.match(/const defaultPlayers = (\[[\s\S]*?\]);/);
 if (!playerMatch) {
-    console.error('ERROR: Could not find defaultPlayers in auction.html');
+    console.error('ERROR: Could not find defaultPlayers in index.html');
 } else {
     try {
-        const players = JSON.parse(playerMatch[1]);
+        const vm = require('vm');
+        const players = vm.runInNewContext(playerMatch[1]);
         console.log('Total players in dataset:', players.length);
         if (players.length !== 238) {
             console.error('FAIL: Expected 238 players, got ' + players.length);
@@ -32,7 +33,7 @@ if (!playerMatch) {
             console.log('PASS: 0 Pakistani players.');
         }
     } catch(e) {
-        console.error('ERROR parsing defaultPlayers JSON:', e.message);
+        console.error('ERROR parsing defaultPlayers:', e.message);
     }
 }
 
@@ -42,7 +43,7 @@ const emojiMatches = content.match(emojiRegex);
 if (emojiMatches) {
     console.log('Found emojis/symbols:', [...new Set(emojiMatches)]);
 } else {
-    console.log('PASS: ZERO emojis or special symbols in auction.html! Everything is clean vector SVG.');
+    console.log('PASS: ZERO emojis or special symbols in index.html! Everything is clean vector SVG.');
 }
 
 console.log('\n--- 3. CRITICAL UI ELEMENTS AND IDS ---');

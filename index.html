@@ -344,6 +344,7 @@
         @media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; transition:none!important; scroll-behavior:auto!important } }
     </style>
 <link rel="stylesheet" href="assets/auction-room.css">
+    <link rel="stylesheet" href="assets/multiplayer.css">
 </head>
 <body>
 <svg aria-hidden="true" width="0" height="0" style="position:absolute;overflow:hidden"><defs>
@@ -407,7 +408,7 @@
     <header class="masthead">
         <div class="mast-inner">
             <div class="brand-title"><span class="club-monogram" aria-hidden="true"><svg viewBox="0 0 40 44"><path d="M3 4 20 1l17 3v17c0 10-9 17-17 21C12 38 3 31 3 21z" fill="none" stroke="currentColor" stroke-width="2"/><path d="m10 27 16-16m-13 0 16 16M10 25l3 3m12-1 3-3" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/><circle cx="20" cy="32" r="2" fill="currentColor"/></svg></span><span>Boundary <i>Club</i></span></div>
-            <nav class="workspace-nav" aria-label="Workspace"><button id="roomNav" aria-current="page"><span data-icon="layout" aria-hidden="true"></span>Auction room</button><button id="poolNav"><span data-icon="players" aria-hidden="true"></span>Player pool</button><button id="reportsNav"><span data-icon="report" aria-hidden="true"></span>Reports</button></nav>
+            <nav class="workspace-nav" aria-label="Workspace"><button id="roomNav" aria-current="page"><span data-icon="layout" aria-hidden="true"></span>Auction room</button><button id="poolNav"><span data-icon="players" aria-hidden="true"></span>Player pool</button><button id="reportsNav"><span data-icon="report" aria-hidden="true"></span>Reports</button><button id="multiplayerNavBtn" type="button" onclick="window.multiplayer && window.multiplayer.openModal()"><span data-icon="players" aria-hidden="true"></span><span id="multiplayerNavLabel">Multiplayer</span></button><div id="multiplayerLiveBadge" class="hidden mp-badge cursor-pointer hover:border-gray-400"></div></nav>
             <div id="headerProgress" class="sr-only"><span id="headerProgressText">Auction setup</span></div>
             <nav class="mast-actions" aria-label="Auction tools">
                 <button id="quickModeBtn" aria-label="Switch display mode" title="Switch display mode"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><g class="moon-icon"><path d="M20.5 14a8.5 8.5 0 0 1-10.6-10.6A8.8 8.8 0 1 0 20.5 14Z"/></g><g class="sun-icon"><circle cx="12" cy="12" r="4"/><path d="M12 1v3m0 16v3M1 12h3m16 0h3M4 4l2 2m12 12 2 2M4 20l2-2M18 6l2-2"/></g></svg></button>
@@ -461,7 +462,7 @@
                     <p class="hero-kicker"><span class="status-light"></span>Pre-auction</p>
                     <h1 id="setupTitle">The auction <em>room.</em></h1>
                     <p class="opening-desc">Set up your franchises and take the first player under the hammer.</p>
-                    <div class="hero-actions"><button id="startAuctionBtn" class="primary-action"><span data-icon="gavel" aria-hidden="true"></span>Start auction</button><button id="setupRules" class="hero-secondary"><span data-icon="sliders" aria-hidden="true"></span>Auction rules</button></div>
+                    <div class="hero-actions"><button id="startAuctionBtn" class="primary-action"><span data-icon="gavel" aria-hidden="true"></span>Start auction</button><button id="setupRules" class="hero-secondary"><span data-icon="sliders" aria-hidden="true"></span>Auction rules</button><button id="multiplayerBtn" class="hero-secondary" type="button" onclick="window.multiplayer && window.multiplayer.openModal()"><span data-icon="players" aria-hidden="true"></span>Multiplayer Room</button></div>
                 </div>
                 <div class="stadium-art" aria-hidden="true"><img src="assets/club-stadium.svg" alt=""></div>
             </div>
@@ -1371,6 +1372,104 @@
         </div>
     </div>
 
+    <!-- MULTIPLAYER MODAL -->
+    <div id="multiplayerModal" class="hidden fixed inset-0 z-40 modal-backdrop flex items-center justify-center p-3 md:p-4">
+        <div class="glass-effect mp-panel p-5">
+            <!-- Header -->
+            <div class="flex items-center justify-between pb-3 border-b border-gray-700/60 mb-4">
+                <div>
+                    <p class="eyebrow">Real-Time Multiplayer</p>
+                    <h2 class="text-xl font-bold text-white">Auction Room Lobby</h2>
+                </div>
+                <button id="closeMultiplayerModalBtn" class="tool-icon" type="button" aria-label="Close modal">
+                    <span data-icon="close" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <!-- Pre-Join Section (Not in a room) -->
+            <div id="mpPreJoinSection" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1.5" for="mpPlayerName">Your Name / Handle</label>
+                    <input type="text" id="mpPlayerName" maxlength="20" placeholder="e.g. Captain" class="w-full bg-gray-900/80 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-fuchsia-500">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                    <!-- Create Room Card -->
+                    <div class="bg-gray-800/60 border border-gray-700/80 rounded-xl p-4 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-sm font-bold text-white mb-1 flex items-center gap-1.5">
+                                <span data-icon="gavel" aria-hidden="true"></span> Host New Auction
+                            </h3>
+                            <p class="text-xs text-gray-400 mb-4">Create a room as host, choose franchises, and invite participants with a room code.</p>
+                        </div>
+                        <button id="mpCreateRoomBtn" type="button" class="primary-action w-full justify-center">
+                            Create Room
+                        </button>
+                    </div>
+
+                    <!-- Join Room Card -->
+                    <div class="bg-gray-800/60 border border-gray-700/80 rounded-xl p-4 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-sm font-bold text-white mb-1 flex items-center gap-1.5">
+                                <span data-icon="players" aria-hidden="true"></span> Join Existing Room
+                            </h3>
+                            <p class="text-xs text-gray-400 mb-2">Enter a 6-character room code shared by your host.</p>
+                            <input type="text" id="mpRoomCodeInput" maxlength="6" placeholder="ROOM CODE" class="w-full bg-gray-900/80 border border-gray-700 rounded-lg px-3 py-1.5 text-center font-mono font-bold tracking-widest text-fuchsia-300 text-sm uppercase mb-3 focus:outline-none focus:border-fuchsia-500">
+                        </div>
+                        <button id="mpJoinRoomBtn" type="button" class="hero-secondary w-full justify-center">
+                            Join Room
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Room Section (In a room) -->
+            <div id="mpActiveRoomSection" class="hidden space-y-4">
+                <!-- Room Code & Status Bar -->
+                <div class="bg-gray-900/80 border border-gray-700/80 rounded-xl p-3 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-gray-400">ROOM CODE:</span>
+                        <span id="mpRoomCodeDisplay" class="font-mono text-lg font-bold text-fuchsia-300 tracking-wider">------</span>
+                        <button id="mpCopyCodeBtn" type="button" class="text-xs px-2 py-0.5 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700">Copy</button>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span id="mpRoleBadge" class="px-2 py-0.5 rounded text-xs">Participant</span>
+                        <span id="mpConnectionStatus" class="text-xs text-green-400 flex items-center gap-1.5"><span class="mp-status-dot"></span> Connected</span>
+                    </div>
+                </div>
+
+                <!-- Franchise Selection -->
+                <div>
+                    <h4 class="text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">Select Your Franchise</h4>
+                    <div id="mpFranchiseSelectGrid" class="grid grid-cols-2 gap-2.5">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Connected Participants -->
+                <div>
+                    <h4 class="text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">Connected Participants</h4>
+                    <div id="mpParticipantsList" class="space-y-1.5 max-h-36 overflow-y-auto pr-1">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Footer Actions -->
+                <div class="pt-2 border-t border-gray-700/60 flex items-center justify-between">
+                    <button id="mpLeaveRoomBtn" type="button" class="text-xs text-red-400 hover:text-red-300">
+                        Leave Room
+                    </button>
+                    <div>
+                        <p id="mpWaitingMsg" class="text-xs text-gray-400 italic">Waiting for host to start...</p>
+                        <button id="mpStartAuctionBtn" type="button" class="primary-action text-sm py-1.5 px-4 hidden">
+                            Start Multiplayer Auction
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 <script>
 // --- INITIAL PLAYER DATA ---
 const defaultPlayers = [
@@ -1686,6 +1785,7 @@ let appState = {
     unsoldSelectedIds: new Set(),
     remainingViewMode: 'cards' // 'cards' | 'list'
 };
+window.appState = appState;
 
 // --- DOM ELEMENTS ---
 const setupScreen = document.getElementById('setupScreen');
@@ -2058,6 +2158,10 @@ function updateUndoButton() {
 }
 
 function undoLastAction() {
+    if (window.multiplayer && window.multiplayer.active) {
+        window.multiplayer.undoLastAction();
+        return;
+    }
     if (!appState.actionHistory.length) return;
     const prev = appState.actionHistory.pop();
     appState.phase = 'bidding';
@@ -2515,6 +2619,10 @@ function showNextPoolModal(advance = true) {
 }
 
 function startRound() {
+    if (window.multiplayer && window.multiplayer.active) {
+        window.multiplayer.startRound();
+        return;
+    }
     poolModal.classList.add('hidden');
     appState.currentPlayerIndex = -1;
     auctionScreen.classList.remove('hidden');
@@ -2522,6 +2630,10 @@ function startRound() {
 }
 
 function startUnsoldRound() {
+    if (window.multiplayer && window.multiplayer.active) {
+        window.multiplayer.startUnsoldRound();
+        return;
+    }
     poolModal.classList.add('hidden');
     appState.isUnsoldRound = true;
     appState.currentUnsoldRoundPlayers = Object.values(appState.playerPools).flat().filter(p => p.status === 'passed-over');
@@ -2561,6 +2673,10 @@ function getCurrentPlayer() {
 }
 
 function nextPlayer() {
+    if (window.multiplayer && window.multiplayer.active) {
+        window.multiplayer.nextPlayer();
+        return;
+    }
     appState.currentPlayerIndex++;
     const player = getCurrentPlayer();
 
@@ -2802,6 +2918,10 @@ function updateControls(isNewPlayer) {
         nextPlayerBtn.classList.add('hidden');
         unsoldBtn.classList.remove('col-span-2');
     }
+    if (window.multiplayer && window.multiplayer.active) {
+        window.multiplayer.applyOwnershipControls();
+        window.multiplayer.syncHostControls();
+    }
 }
 
 // TIMER FUNCTIONALITY
@@ -2887,6 +3007,10 @@ function startTimer(seconds = appState.settings.timerDuration || 40) {
 
 // BID FUNCTION
 function bid(teamIdx) {
+    if (window.multiplayer && window.multiplayer.active) {
+        window.multiplayer.placeBid(teamIdx, window.selectedBidStep || 1);
+        return;
+    }
     if (!appState.auctionStarted || appState.auctionEnded) return;
     if (appState.phase !== 'bidding' || appState.timerPaused || !getCurrentPlayer()) return;
 
@@ -2958,6 +3082,10 @@ bidButtons.forEach(btn => btn.addEventListener('click', () => {
 
 // SELL PLAYER
 function sellPlayer() {
+    if (window.multiplayer && window.multiplayer.active) {
+        window.multiplayer.sellPlayer();
+        return;
+    }
     if (appState.phase !== 'bidding' || appState.timerPaused || appState.highestBidder === null || !getCurrentPlayer()) return;
     appState.phase = 'settled';
     clearInterval(appState.timerId);
@@ -3032,6 +3160,10 @@ function sellPlayer() {
 
 // MARK UNSOLD
 function markUnsold() {
+    if (window.multiplayer && window.multiplayer.active) {
+        window.multiplayer.markUnsold();
+        return;
+    }
     if (appState.phase !== 'bidding' || appState.timerPaused || appState.highestBidder !== null) return;
     clearInterval(appState.timerId);
     appState.timerId = null;
@@ -3074,6 +3206,10 @@ function markUnsold() {
 
 // RESTART CURRENT PLAYER
 function restartCurrentPlayer() {
+    if (window.multiplayer && window.multiplayer.active) {
+        window.multiplayer.restartCurrentPlayer();
+        return;
+    }
     if (!appState.auctionStarted || appState.auctionEnded) return;
     const player = getCurrentPlayer();
     if (!player) return;
@@ -4250,6 +4386,10 @@ document.getElementById('importFileInput').addEventListener('change', (e) => {
 
 // ==================== PAUSE TIMER & KEYBOARD SHORTCUTS ====================
 function togglePauseTimer() {
+    if (window.multiplayer && window.multiplayer.active) {
+        window.multiplayer.togglePauseTimer();
+        return;
+    }
     if (!appState.auctionStarted || appState.auctionEnded) return;
     if (appState.phase !== 'bidding') return;
 
@@ -4301,7 +4441,7 @@ document.addEventListener('keydown', (e) => {
     }
     if (e.key === 'Escape') {
         const top = [...document.querySelectorAll('.modal-backdrop:not(.hidden)')].pop();
-        const close = {logoModal:'cancelLogo',helpModal:'closeHelpBtn',auctionCentreModal:'closeAuctionCentreBtn',settingsModal:'closeSettingsBtn',editPoolModal:'closeEditPoolBtn',appConfirmModal:'appConfirmCancelBtn'};
+        const close = {logoModal:'cancelLogo',helpModal:'closeHelpBtn',auctionCentreModal:'closeAuctionCentreBtn',settingsModal:'closeSettingsBtn',editPoolModal:'closeEditPoolBtn',appConfirmModal:'appConfirmCancelBtn',multiplayerModal:'closeMultiplayerModalBtn'};
         if (top && close[top.id]) document.getElementById(close[top.id]).click();
         return;
     }
@@ -4421,7 +4561,7 @@ document.addEventListener('DOMContentLoaded', () => {
 const dialogueNames = {
     logoModal: 'Franchise logo', settingsModal: 'Auction rules and settings', editPoolModal: 'Player database',
     retentionModal: 'Player retention', poolModal: 'Upcoming player pool', helpModal: 'Keyboard shortcuts',
-    auctionCentreModal: 'Auction centre', appConfirmModal: 'Confirm action'
+    auctionCentreModal: 'Auction centre', appConfirmModal: 'Confirm action', multiplayerModal: 'Multiplayer room'
 };
 const focusable = 'a[href], button:not(:disabled), input:not(:disabled), select:not(:disabled), [tabindex="0"]';
 const dialogStack = [];
@@ -4454,5 +4594,7 @@ document.addEventListener('keydown', e => {
 });
 </script>
 <script src="assets/auction-room.js"></script>
+<script src="assets/vendor/socket.io.min.js"></script>
+<script src="assets/multiplayer-client.js"></script>
 </body>
 </html>
