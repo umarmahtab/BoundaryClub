@@ -1,6 +1,8 @@
 'use strict';
 
 const roomIcons = {
+    back: '<path d="M19 12H5m7 7-7-7 7-7"/>',
+    download: '<path d="M12 3v12m-4-4 4 4 4-4M5 16v5h14v-5"/>',
     check: '<path d="m5 12 4 4L19 6"/>',
     plus: '<path d="M12 5v14M5 12h14"/>',
     next: '<path d="m9 6 6 6-6 6"/>',

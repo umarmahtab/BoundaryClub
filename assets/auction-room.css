@@ -377,3 +377,69 @@ body:has(#auctionScreen:not(.hidden)) .club-credit { display:none; }
 @media(max-width:390px) {
     .retention-list { grid-template-columns:1fr; }
 }
+
+/* Player database */
+#editPoolModal > .database-panel { display:flex; flex-direction:column; width:min(100%,1120px); height:min(790px,100dvh - 52px); overflow:hidden; }
+.database-header { display:flex; align-items:center; justify-content:space-between; gap:12px; flex:none; padding:clamp(15px,2.2vw,28px); background:linear-gradient(100deg,var(--night),var(--green)); border-bottom:1px solid #ffffff24; }
+.database-title,.database-header-actions,.database-csv,.database-editor-actions { display:flex; align-items:center; gap:9px; }
+.database-title > span { width:44px; height:44px; border-radius:10px; color:var(--accent); background:#ffffff13; }
+.database-title > span svg { width:24px; height:24px; }
+#editPoolModal .database-title h2 { margin:0; font-size:clamp(25px,3.2vw,43px); line-height:1.04; }
+#editPoolModal .primary-action { gap:8px; min-height:44px; border:1px solid transparent; background:var(--accent); color:#16261d; padding:9px 14px; font-size:.93rem; }
+#editPoolModal .primary-action:hover { box-shadow:none; }
+#editPoolModal .database-button,#editPoolModal .panel-close { display:inline-flex; justify-content:center; align-items:center; gap:6px; min-height:44px; border:1px solid #ffffff35; border-radius:9px; background:#254437; color:#f3f5ec; font-size:.88rem; font-weight:650; padding:7px 10px; white-space:nowrap; }
+#editPoolModal .panel-close { width:44px; flex:none; padding:0; background:#102b21; }
+.database-roster,.database-editor { flex:1; min-height:0; padding:clamp(13px,2.2vw,28px); }
+.database-roster { display:flex; flex-direction:column; }
+.database-panel:has(.database-editor:not(.hidden)) :is(.database-roster,#addPlayerBtn), .database-editor.hidden,.database-editor button[hidden] { display:none; }
+.database-toolbar { display:flex; align-items:flex-end; gap:14px; }
+.database-filters { flex:1; min-width:0; display:grid; grid-template-columns:minmax(110px,1.5fr) repeat(2,minmax(95px,1fr)); gap:9px; }
+.database-panel label { display:grid; min-width:0; gap:5px; color:#d9e6db; font-size:.91rem; font-weight:650; }
+#editPoolModal :is(input,select):not([type=file]) { width:100%; min-height:44px; min-width:0; padding:8px 10px; border:1px solid #789486; border-radius:8px; background:#102e24; color:#fafbf3; font:inherit; font-weight:450; }
+#editPoolModal input::placeholder { color:#b1c4b7; }
+.database-count { margin:12px 0 7px; color:#c6d8cb; font-size:.88rem; }
+.database-table { flex:1; min-height:0; display:flex; flex-direction:column; border:1px solid #ffffff24; border-radius:12px; overflow:hidden; }
+.database-table-head,.database-row { display:grid; grid-template-columns:minmax(0,1fr) minmax(82px,.32fr) minmax(132px,.38fr) 76px; gap:10px; align-items:center; padding:8px 12px; }
+.database-table-head { flex:none; background:#1d4033; color:#d7e4da; font-size:.86rem; font-weight:650; }
+.database-list { overflow:auto; scrollbar-gutter:stable; }
+.database-row { min-height:62px; border-top:1px solid #ffffff16; }
+.database-row:nth-child(even) { background:#ffffff06; }
+.database-row:hover { background:#ffffff0d; }
+.database-player { display:flex; align-items:center; gap:9px; min-width:0; overflow-wrap:anywhere; }
+.database-player strong,.database-player small { display:block; }
+.database-player strong { font-size:1rem; }
+.database-player small { color:#c7d6cb; font-size:.82rem; margin-top:2px; }
+.database-role-icon { display:grid; place-items:center; flex:none; width:34px; height:34px; color:var(--accent); border-radius:8px; background:#ffffff11; }
+.database-role-icon svg { width:17px; height:17px; }
+.database-value { font-variant-numeric:tabular-nums; font-size:.9rem; }
+.database-value small { display:none; }
+.database-value strong { color:#f1d58b; }
+.database-empty { padding:22px 14px; color:#c7d6cb; }
+.database-editor { overflow:auto; }
+.database-editor-heading,.database-editor-fields,.database-editor-actions { width:min(100%,740px); margin-inline:auto; }
+.database-editor-heading { display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin-bottom:16px; }
+#editPoolModal .database-editor-heading h3 { font-size:clamp(25px,2.7vw,36px); overflow-wrap:anywhere; }
+.database-editor-fields { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px; }
+.editor-wide { grid-column:1/-1; }
+.editor-wide small { color:#bcd1c3; font-size:.83rem; font-weight:450; }
+.database-editor-actions { flex-wrap:wrap; margin-top:18px; padding-top:14px; border-top:1px solid #ffffff25; }
+.database-editor-actions #saveEditPlayerBtn { margin-left:auto; }
+#editPoolModal .database-danger { color:#ffd6cf; background:#613b36; }
+@media(max-width:760px) {
+    .database-toolbar { flex-direction:column; align-items:stretch; gap:8px; }
+    .database-csv { justify-content:flex-start; flex-wrap:wrap; }
+}
+@media(max-width:540px) {
+    #editPoolModal > .database-panel { height:calc(100dvh - 24px); }
+    .database-title > span { display:none; }
+    .database-header { gap:6px; }
+    .database-header-actions { gap:5px; }
+    .database-filters { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .database-search { grid-column:1/-1; }
+    .database-table-head { display:none; }
+    .database-row { grid-template-columns:repeat(2,minmax(0,1fr)) auto; gap:6px; }
+    .database-player { grid-column:1/-1; }
+    .database-value small { display:block; color:#c7d6cb; font-size:.72rem; }
+    .database-row .database-button { grid-column:3; grid-row:2; }
+    .database-role-icon { width:29px; height:29px; }
+}

@@ -1194,88 +1194,61 @@
     </div>
 
     <!-- EDIT PLAYER DATABASE MODAL -->
-    <div id="editPoolModal" class="hidden fixed inset-0 z-40 modal-backdrop flex items-center justify-center p-3 md:p-4">
-        <div class="glass-effect bg-gray-900 w-full max-w-4xl h-[88vh] flex flex-col p-4 md:p-6 rounded-2xl shadow-2xl border border-gray-600 overflow-hidden">
-            <div class="flex justify-between items-center mb-3 pb-3 border-b border-gray-700">
-                <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
-                    <svg class="w-5 h-5 text-fuchsia-400 inline mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg> Manage Player Database
-                </h2>
-                <div class="flex items-center gap-2">
-                    <button id="addPlayerBtn" class="bg-fuchsia-600 hover:bg-fuchsia-500 text-white px-3 py-1.5 rounded text-xs font-bold">+ Add Player</button>
-                    <button id="closeEditPoolBtn" class="text-gray-400 hover:text-white text-2xl leading-none">&times;</button>
+    <div id="editPoolModal" class="hidden fixed inset-0 z-40 modal-backdrop auction-dialog">
+        <div class="glass-effect database-panel">
+            <header class="database-header">
+                <div class="database-title"><span data-icon="players" aria-hidden="true"></span><h2>Player database</h2></div>
+                <div class="database-header-actions">
+                    <button id="addPlayerBtn" type="button" class="primary-action"><span data-icon="plus" aria-hidden="true"></span>Add player</button>
+                    <button id="closeEditPoolBtn" type="button" class="panel-close" aria-label="Close player database"><span data-icon="close" aria-hidden="true"></span></button>
                 </div>
-            </div>
-
-            <!-- Filters & Preset Bar -->
-            <div class="flex flex-wrap gap-2 items-center justify-between mb-3 bg-gray-800/60 p-2.5 rounded-xl border border-gray-700">
-                <div class="flex flex-wrap gap-2 items-center flex-1">
-                    <input type="text" id="editSearch" placeholder="Search player..." class="bg-gray-900/80 text-white p-2 rounded-lg border border-gray-600 text-xs w-44 md:w-56 focus:border-fuchsia-500 outline-none">
-                    <select id="editFilterCategory" class="bg-gray-900/80 text-white p-2 rounded-lg border border-gray-600 text-xs">
-                        <option value="All">All Categories</option>
-                        <option value="Batsman">Batsman</option>
-                        <option value="Wicket Keeper">Wicket Keeper</option>
-                        <option value="Allrounder">Allrounder</option>
-                        <option value="Fast Bowler">Fast Bowler</option>
-                        <option value="Spinner">Spinner</option>
-                    </select>
-                    <select id="editFilterPrice" class="bg-gray-900/80 text-white p-2 rounded-lg border border-gray-600 text-xs">
-                        <option value="All">All Prices</option>
-                        <option value="200">200L</option>
-                        <option value="100">100L</option>
-                        <option value="30">30L</option>
-                    </select>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button id="exportPlayersCsvBtn" class="bg-blue-700 hover:bg-blue-600 text-white px-2.5 py-1.5 rounded text-xs font-bold">Export CSV</button>
-                    <button id="importPlayersCsvBtn" class="bg-gray-700 hover:bg-gray-600 text-white px-2.5 py-1.5 rounded text-xs font-bold">Import CSV</button>
-                    <input type="file" id="importPlayersCsvInput" class="hidden" accept=".csv,text/csv">
-                </div>
-            </div>
-
-            <!-- Player List Grid -->
-            <div class="flex-1 overflow-y-auto pr-1" id="editPlayerListContainer"></div>
-
-            <!-- Mini Player Editor Form -->
-            <div id="playerEditorForm" class="hidden mt-3 p-3 bg-gray-800 rounded-xl border border-gray-600 shrink-0">
-                <h3 class="text-sm font-bold text-fuchsia-300 mb-2" id="editorPlayerName">Edit Player</h3>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                    <div><label class="text-[10px] text-gray-400">Name</label><input type="text" id="editorName" class="w-full bg-gray-700 text-white p-1.5 rounded border border-gray-600 text-xs"></div>
-                    <div><label class="text-[10px] text-gray-400">Country</label><input type="text" id="editorCountry" class="w-full bg-gray-700 text-white p-1.5 rounded border border-gray-600 text-xs"></div>
-                    <div>
-                        <label class="text-[10px] text-gray-400">Category</label>
-                        <select id="editorCategory" class="w-full bg-gray-700 text-white p-1.5 rounded border border-gray-600 text-xs">
-                            <option value="Batsman">Batsman</option>
-                            <option value="Fast Bowler">Fast Bowler</option>
-                            <option value="Spinner">Spinner</option>
-                            <option value="Wicket Keeper">Wicket Keeper</option>
-                            <option value="Allrounder">Allrounder</option>
-                        </select>
+            </header>
+            <section class="database-roster" aria-label="Player roster">
+                <div class="database-toolbar">
+                    <div class="database-filters">
+                        <label class="database-search"><span>Search players</span><input type="search" id="editSearch" data-dialog-focus placeholder="Enter a player name"></label>
+                        <label>Role <select id="editFilterCategory">
+                            <option value="All">All roles</option><option>Batsman</option><option>Wicket Keeper</option>
+                            <option>Allrounder</option><option>Fast Bowler</option><option>Spinner</option>
+                        </select></label>
+                        <label>Base price <select id="editFilterPrice"><option value="All">All prices</option></select></label>
                     </div>
-                    <div>
-                        <label class="text-[10px] text-gray-400">Base Price (Lakhs)</label>
-                        <input type="number" id="editorBasePrice" class="w-full bg-gray-700 text-white p-1.5 rounded border border-gray-600 text-xs">
+                    <div class="database-csv">
+                        <button id="importPlayersCsvBtn" type="button" class="database-button"><span data-icon="upload" aria-hidden="true"></span>Import CSV</button>
+                        <button id="exportPlayersCsvBtn" type="button" class="database-button"><span data-icon="download" aria-hidden="true"></span>Export CSV</button>
+                        <input type="file" id="importPlayersCsvInput" class="hidden" accept=".csv,text/csv">
                     </div>
                 </div>
-                <div class="mt-2">
-                    <label for="editorAiMaxBid" class="text-[10px] text-gray-400">Computer bid ceiling (lakhs)</label>
-                    <input type="number" id="editorAiMaxBid" min="0" step="1" class="w-full bg-gray-700 text-white p-1.5 rounded border border-gray-600 text-xs">
-                    <p class="text-[10px] text-gray-400 mt-1">Leave blank for the suggested value. Enter 0 to make computer teams pass.</p>
+                <p class="database-count" id="databasePlayerCount" role="status"></p>
+                <div class="database-table">
+                    <div class="database-table-head" aria-hidden="true"><span>Player</span><span>Base price</span><span>Computer ceiling</span><span></span></div>
+                    <div id="editPlayerListContainer" class="database-list"></div>
                 </div>
-                <div class="mt-2">
-                    <label class="text-[10px] text-gray-400">Optional Photo URL</label>
-                    <input type="url" id="editorPhoto" placeholder="https://..." class="w-full bg-gray-700 text-white p-1.5 rounded border border-gray-600 text-xs">
+            </section>
+            <form id="playerEditorForm" class="hidden database-editor" novalidate>
+                <div class="database-editor-heading">
+                    <button id="cancelEditPlayerBtn" type="button" class="database-button"><span data-icon="back" aria-hidden="true"></span>Back to roster</button>
+                    <h3 id="editorPlayerName">Edit player</h3>
                 </div>
-                <div class="mt-2.5 flex justify-between gap-2">
-                    <div class="flex gap-2">
-                        <button id="deletePlayerBtn" class="bg-red-700 hover:bg-red-600 text-white px-3 py-1 rounded text-xs font-bold">Delete</button>
-                        <button id="duplicatePlayerBtn" class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-xs font-bold">Duplicate</button>
-                    </div>
-                    <div class="flex gap-2">
-                        <button id="cancelEditPlayerBtn" class="text-gray-300 hover:text-white px-3 py-1 text-xs">Cancel</button>
-                        <button id="saveEditPlayerBtn" class="bg-green-600 hover:bg-green-500 text-white px-4 py-1 rounded text-xs font-bold">Save Changes</button>
-                    </div>
+                <div class="database-editor-fields">
+                    <label>Name <input type="text" id="editorName" required></label>
+                    <label>Country <input type="text" id="editorCountry"></label>
+                    <label>Role <select id="editorCategory">
+                        <option>Batsman</option><option>Fast Bowler</option><option>Spinner</option><option>Wicket Keeper</option><option>Allrounder</option>
+                    </select></label>
+                    <label>Base price (lakhs) <input type="number" id="editorBasePrice" min="1" step="1"></label>
+                    <label class="editor-wide">Computer bid ceiling (lakhs)
+                        <input type="number" id="editorAiMaxBid" min="0" step="1" aria-describedby="editorCapHint">
+                        <small id="editorCapHint">Leave blank for the suggested ceiling. Enter 0 to make computer teams pass.</small>
+                    </label>
+                    <label class="editor-wide">Photo URL <input type="url" id="editorPhoto" placeholder="https://…" autocomplete="off"></label>
                 </div>
-            </div>
+                <div class="database-editor-actions">
+                    <button id="deletePlayerBtn" type="button" class="database-button database-danger">Delete</button>
+                    <button id="duplicatePlayerBtn" type="button" class="database-button">Duplicate</button>
+                    <button id="saveEditPlayerBtn" type="submit" class="primary-action">Save player</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -4160,80 +4133,97 @@ document.getElementById('restoreDefaultsBtn').addEventListener('click', () => {
 });
 
 // ==================== EDIT PLAYER DATABASE MODAL ====================
+const playerEditor = document.getElementById('playerEditorForm');
+const databaseList = document.getElementById('editPlayerListContainer');
+const databaseSearch = document.getElementById('editSearch');
+const roleFilter = document.getElementById('editFilterCategory');
+const priceFilter = document.getElementById('editFilterPrice');
+const addPlayerButton = document.getElementById('addPlayerBtn');
+let currentEditingIndex = -1;
+
 document.getElementById('managePoolBtn').addEventListener('click', () => {
     renderEditList();
     editPoolModal.classList.remove('hidden');
 });
 document.getElementById('closeEditPoolBtn').addEventListener('click', () => {
+    playerEditor.classList.add('hidden');
     editPoolModal.classList.add('hidden');
     refreshSetupSummary();
 });
 
-let currentEditingIndex = -1;
-
 function renderEditList() {
-    const list = document.getElementById('editPlayerListContainer');
-    const term = (document.getElementById('editSearch').value || '').toLowerCase();
-    const cat = document.getElementById('editFilterCategory').value;
-    const prc = document.getElementById('editFilterPrice').value;
+    const roster = appState.masterPlayerList;
+    const currentPrice = priceFilter.value;
+    const prices = [...new Set(roster.map(player => Number(player.basePrice)))].filter(Number.isFinite).sort((a,b) => a-b);
+    priceFilter.replaceChildren(new Option('All prices', 'All'), ...prices.map(price => new Option('₹' + formatPrice(price), String(price))));
+    priceFilter.value = prices.includes(Number(currentPrice)) ? currentPrice : 'All';
 
-    const filtered = appState.masterPlayerList.filter(p => {
-        if (term && !p.name.toLowerCase().includes(term)) return false;
-        if (cat !== 'All' && p.category !== cat) return false;
-        if (prc !== 'All' && p.basePrice.toString() !== prc) return false;
-        return true;
-    });
+    const term = databaseSearch.value.trim().toLowerCase();
+    const role = roleFilter.value;
+    const price = priceFilter.value;
+    const rows = roster.map((player, index) => ({ player, index })).filter(({ player }) =>
+        player.name.toLowerCase().includes(term) &&
+        (role === 'All' || player.category === role) &&
+        (price === 'All' || String(Number(player.basePrice)) === price)
+    );
+    document.getElementById('databasePlayerCount').textContent = rows.length === roster.length
+        ? `${roster.length} players` : `${rows.length} of ${roster.length} players`;
 
-    list.innerHTML = filtered.map(p => {
-        const origIdx = appState.masterPlayerList.indexOf(p);
-        return `
-            <div class="flex justify-between items-center bg-gray-800/80 p-2.5 rounded-lg mb-1.5 border border-gray-700 hover:border-gray-500 transition text-xs">
-                <div class="flex items-center gap-2 truncate mr-2">
-                    <span class="text-base">${getRoleSvg(p.category)}</span>
-                    <div>
-                        <p class="font-bold text-white">${escapeText(p.name)}</p>
-                        <p class="text-[10px] text-gray-400">${escapeText(p.category)} · ${escapeText(p.country)}</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3">
-                    <span class="font-bold text-yellow-300">₹${formatPrice(p.basePrice)}</span>
-                    <button onclick="openEditor(${origIdx})" class="bg-gray-700 hover:bg-gray-600 text-white px-2.5 py-1 rounded text-xs">Edit</button>
-                </div>
+    databaseList.innerHTML = rows.length ? rows.map(({ player, index }) => `
+        <article class="database-row">
+            <div class="database-player">
+                <span class="database-role-icon">${getRoleSvg(player.category)}</span>
+                <span><strong>${escapeText(player.name)}</strong><small>${escapeText(player.category)} · ${escapeText(player.country)}</small></span>
             </div>
-        `;
-    }).join('');
+            <div class="database-value"><small>Base price</small><strong>₹${formatPrice(player.basePrice)}</strong></div>
+            <div class="database-value"><small>Computer ceiling</small><strong>₹${formatPrice(computerBidCap(player))}</strong></div>
+            <button type="button" class="database-button" data-edit-player="${index}"><span aria-hidden="true">${roomIcon('pencil')}</span>Edit<span class="sr-only"> ${escapeText(player.name)}</span></button>
+        </article>
+    `).join('') : '<p class="database-empty">No players match your filters.</p>';
 }
 
-function openEditor(idx) {
-    currentEditingIndex = idx;
-    const player = appState.masterPlayerList[idx];
+function refreshEditorCeiling() {
+    const name = document.getElementById('editorName').value.trim();
+    const basePrice = Number(document.getElementById('editorBasePrice').value) || 100;
+    document.getElementById('editorAiMaxBid').placeholder = computerBidCap({ name, basePrice });
+}
+
+function openEditor(index) {
+    currentEditingIndex = index;
+    const player = appState.masterPlayerList[index] || { name:'', country:'India', category:'Batsman', basePrice:100 };
+    document.getElementById('editorPlayerName').textContent = index < 0 ? 'Add player' : 'Edit ' + player.name;
     document.getElementById('editorName').value = player.name;
     document.getElementById('editorCountry').value = player.country;
     document.getElementById('editorCategory').value = player.category;
     document.getElementById('editorBasePrice').value = player.basePrice;
     document.getElementById('editorAiMaxBid').value = player.aiMaxBid ?? '';
-    document.getElementById('editorAiMaxBid').placeholder = computerBidCap({ ...player, aiMaxBid: undefined });
     document.getElementById('editorPhoto').value = player.photo || '';
-    document.getElementById('playerEditorForm').classList.remove('hidden');
+    document.getElementById('deletePlayerBtn').hidden = index < 0;
+    document.getElementById('duplicatePlayerBtn').hidden = index < 0;
+    refreshEditorCeiling();
+    playerEditor.classList.remove('hidden');
+    playerEditor.scrollTop = 0;
+    document.getElementById('editorName').focus();
 }
 
-document.getElementById('editSearch').addEventListener('input', renderEditList);
-document.getElementById('editFilterCategory').addEventListener('change', renderEditList);
-document.getElementById('editFilterPrice').addEventListener('change', renderEditList);
+function closePlayerEditor() {
+    playerEditor.classList.add('hidden');
+    (databaseList.querySelector(`[data-edit-player="${currentEditingIndex}"]`) || addPlayerButton).focus({ preventScroll:true });
+}
 
-document.getElementById('addPlayerBtn').addEventListener('click', () => {
-    currentEditingIndex = -1;
-    document.getElementById('editorName').value = "New Player";
-    document.getElementById('editorCountry').value = "India";
-    document.getElementById('editorCategory').value = "Batsman";
-    document.getElementById('editorBasePrice').value = 100;
-    document.getElementById('editorAiMaxBid').value = '';
-    document.getElementById('editorAiMaxBid').placeholder = computerBidCap({ name: 'New Player', basePrice: 100 });
-    document.getElementById('editorPhoto').value = '';
-    document.getElementById('playerEditorForm').classList.remove('hidden');
+databaseSearch.addEventListener('input', renderEditList);
+roleFilter.addEventListener('change', renderEditList);
+priceFilter.addEventListener('change', renderEditList);
+document.getElementById('editorName').addEventListener('input', refreshEditorCeiling);
+document.getElementById('editorBasePrice').addEventListener('input', refreshEditorCeiling);
+databaseList.addEventListener('click', event => {
+    const button = event.target.closest('[data-edit-player]');
+    if (button) openEditor(Number(button.dataset.editPlayer));
 });
+addPlayerButton.addEventListener('click', () => openEditor(-1));
 
-document.getElementById('saveEditPlayerBtn').addEventListener('click', () => {
+playerEditor.addEventListener('submit', event => {
+    event.preventDefault();
     const name = document.getElementById('editorName').value.trim();
     const country = document.getElementById('editorCountry').value.trim();
     const category = document.getElementById('editorCategory').value;
@@ -4264,8 +4254,8 @@ document.getElementById('saveEditPlayerBtn').addEventListener('click', () => {
     }
 
     savePlayerDatabase();
-    document.getElementById('playerEditorForm').classList.add('hidden');
     renderEditList();
+    closePlayerEditor();
 });
 
 document.getElementById('duplicatePlayerBtn').addEventListener('click', () => {
@@ -4287,16 +4277,15 @@ document.getElementById('deletePlayerBtn').addEventListener('click', () => {
         () => {
             appState.masterPlayerList.splice(currentEditingIndex, 1);
             savePlayerDatabase();
-            document.getElementById('playerEditorForm').classList.add('hidden');
+            currentEditingIndex = -1;
             renderEditList();
+            closePlayerEditor();
             showToast(`Deleted ${name}`, "info");
         }
     );
 });
 
-document.getElementById('cancelEditPlayerBtn').addEventListener('click', () => {
-    document.getElementById('playerEditorForm').classList.add('hidden');
-});
+document.getElementById('cancelEditPlayerBtn').addEventListener('click', closePlayerEditor);
 
 // ==================== CSV / EXPORT / IMPORT ====================
 function csvCell(value) {
@@ -4497,6 +4486,7 @@ document.addEventListener('keydown', (e) => {
     }
     if (e.key === 'Escape') {
         const top = [...document.querySelectorAll('.modal-backdrop:not(.hidden)')].pop();
+        if (top === editPoolModal && !playerEditor.classList.contains('hidden')) { closePlayerEditor(); return; }
         const close = {logoModal:'cancelLogo',helpModal:'closeHelpBtn',auctionCentreModal:'closeAuctionCentreBtn',settingsModal:'closeSettingsBtn',editPoolModal:'closeEditPoolBtn',appConfirmModal:'appConfirmCancelBtn',multiplayerModal:'closeMultiplayerModalBtn'};
         if (top && close[top.id]) document.getElementById(close[top.id]).click();
         return;
@@ -4642,7 +4632,7 @@ for (const [id, name] of Object.entries(dialogueNames)) {
         if (!dialog.classList.contains('hidden') && index === -1) {
             opener = document.activeElement;
             dialogStack.push(dialog);
-            const first = [...dialog.querySelectorAll(focusable)].find(el => el.getClientRects().length);
+            const first = dialog.querySelector('[data-dialog-focus]') || [...dialog.querySelectorAll(focusable)].find(el => el.getClientRects().length);
             first?.focus({preventScroll:true});
         } else if (dialog.classList.contains('hidden') && index >= 0) {
             dialogStack.splice(index, 1);
