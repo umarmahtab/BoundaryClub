@@ -1,6 +1,6 @@
 {
   "framework": null,
-  "buildCommand": "npm run build",
+  "buildCommand": "MULTIPLAYER_SERVER_URL=${MULTIPLAYER_SERVER_URL:-https://boundaryclub-multiplayer.onrender.com} npm run build",
   "outputDirectory": "dist",
   "cleanUrls": true,
   "rewrites": [
