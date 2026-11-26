@@ -445,13 +445,26 @@
                     <h1 id="setupTitle">Cricket <em>auction.</em></h1>
                     <p class="opening-desc">Choose your teams and start bidding.</p>
                     <div class="franchise-options">
-                        <label>Teams <select id="franchiseCount" aria-label="Number of franchises">
-                            <option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option><option>7</option><option>8</option>
-                        </select></label>
-                        <label>Play style <select id="auctionPlayStyle"><option value="solo">Solo vs computer (Alpha)</option><option value="manual" selected>Control all teams</option></select></label>
-                        <label id="soloTeamField" hidden>Your franchise <select id="soloTeam"></select></label>
+                        <fieldset class="play-style">
+                            <legend>Play style</legend>
+                            <div class="play-style-options">
+                                <label><input type="radio" name="auctionPlayStyle" value="manual"><span>Manual</span></label>
+                                <label><input type="radio" name="auctionPlayStyle" value="solo"><span>Vs computer <small>Alpha</small></span></label>
+                            </div>
+                        </fieldset>
+                        <div class="setup-team-controls">
+                            <div class="team-count-field">
+                                <span id="teamCountLabel">Teams</span>
+                                <div class="team-stepper" role="group" aria-labelledby="teamCountLabel">
+                                    <button id="removeFranchise" type="button" aria-label="Remove a team">−</button>
+                                    <output id="franchiseCount" aria-label="Number of teams">4</output>
+                                    <button id="addFranchise" type="button" aria-label="Add a team">+</button>
+                                </div>
+                            </div>
+                            <label id="soloTeamField" hidden>Your franchise <select id="soloTeam"></select></label>
+                        </div>
                     </div>
-                    <p id="soloAlphaNote" class="alpha-note" hidden><strong>Alpha</strong> Computer bidding is still being tuned.</p>
+                    <p id="soloAlphaNote" class="alpha-note" hidden>Computer bidding is still being tuned.</p>
                     <div class="hero-actions"><button id="startAuctionBtn" class="primary-action"><span data-icon="gavel" aria-hidden="true"></span>Start auction</button><button id="setupRules" class="hero-secondary"><span data-icon="sliders" aria-hidden="true"></span>Auction rules</button><button id="multiplayerBtn" class="hero-secondary" type="button" onclick="window.multiplayer && window.multiplayer.openModal()"><span data-icon="players" aria-hidden="true"></span>Multiplayer</button></div>
                 </div>
                 <div class="stadium-art" aria-hidden="true"><img src="assets/club-stadium.svg" alt=""></div>
@@ -2406,7 +2419,7 @@ function updateProgressIndicator() {
 function startAuction() {
     if (window.multiplayer?.active) { window.multiplayer.openModal(); return; }
     if (!syncFranchiseSetup()) return;
-    appState.humanTeam = document.getElementById('auctionPlayStyle').value === 'solo'
+    appState.humanTeam = selectedPlayStyle() === 'solo'
         ? Number(document.getElementById('soloTeam').value) : null;
 
     const purse = appState.settings.initialPurse;

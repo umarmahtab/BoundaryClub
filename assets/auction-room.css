@@ -182,9 +182,6 @@ body.theme-fuchsia {--green:#104f3c;--accent:#f3ca70}
 }
 @media(max-width:370px){.mast-inner,#app,.club-credit{width:calc(100% - 20px)}.workspace-nav button{gap:5px;padding-inline:7px}.franchise-name{font-size:17px}.team-tools button{gap:3px}}
 
-.franchise-options { display:flex; flex-wrap:wrap; gap:12px 20px; margin-bottom:14px; }
-.franchise-options label { display:flex; align-items:center; gap:8px; color:var(--muted); font-size:.9rem; }
-.franchise-options select { background:var(--card); color:var(--ink); border:1px solid var(--line); border-radius:8px; padding:7px 10px; }
 .franchise-options [hidden], .franchise-card[hidden], .team-purse-card[hidden], .bid-team-card-btn[hidden] { display:none !important; }
 
 .computer-pass { margin:8px 0; color:var(--ink); background:var(--card); border:1px solid var(--line); border-radius:8px; padding:7px 10px; font-size:.85rem; }
@@ -195,12 +192,29 @@ body.theme-fuchsia {--green:#104f3c;--accent:#f3ca70}
 #setupScreen .opening-copy { padding:clamp(24px,4vw,50px); }
 #setupScreen .opening-card h1 { max-width:none; margin:0; }
 #setupScreen .opening-desc { max-width:none; margin:9px 0 23px; }
-#setupScreen .franchise-options { gap:10px; margin:0; }
-#setupScreen .franchise-options label { display:grid; gap:5px; color:#dfebe2; font-weight:600; align-content:start; }
-#setupScreen .franchise-options label[hidden] { display:none; }
-#setupScreen .franchise-options select { min-height:46px; min-width:0; padding:8px 12px; color:#f7f8ee; background:#142f26; border-color:#71877a; }
-.alpha-note { margin:12px 0 0; color:#e3ebe1; font-size:.88rem; }
-.alpha-note strong { display:inline-block; padding:2px 7px; margin-right:4px; border:1px solid #d7bc73; border-radius:6px; color:#f4d37d; }
+#setupScreen .franchise-options { display:grid; gap:13px; max-width:390px; }
+.play-style { border:0; min-width:0; margin:0; padding:0; }
+.play-style legend, .team-count-field > span, #soloTeamField { color:#dfebe2; font-size:.86rem; font-weight:650; }
+.play-style legend { margin-bottom:6px; }
+.play-style-options,.team-stepper { display:grid; gap:4px; padding:4px; border:1px solid #ffffff35; border-radius:12px; background:#0e2820; }
+.play-style-options { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.play-style-options label { position:relative; cursor:pointer; }
+.play-style-options input { position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:pointer; }
+.play-style-options label > span { display:flex; justify-content:center; align-items:center; gap:7px; padding:7px 6px; min-height:42px; border:1px solid transparent; border-radius:8px; color:#e2ebe2; font-weight:650; font-size:.9rem; transition:background .18s,color .18s; }
+.play-style-options label:hover > span { background:#ffffff10; }
+.play-style-options input:checked + span { background:#2d4e40; border-color:#6b8777; color:#fffdf1; }
+.play-style-options input:focus-visible + span { outline:2px solid var(--gold); outline-offset:2px; }
+.play-style-options small { color:#f4d37d; font-size:.69rem; font-weight:750; }
+.setup-team-controls { display:flex; gap:12px; align-items:flex-end; }
+.team-count-field,#soloTeamField { display:grid; gap:6px; min-width:0; }
+.team-stepper { grid-template-columns:40px 34px 40px; align-items:center; text-align:center; }
+.team-stepper button { min-height:39px; border-radius:8px; background:#26483a; color:#fffdf1; font-size:1.3rem; transition:background .18s; }
+.team-stepper button:hover:not(:disabled) { background:#3b6450; }
+.team-stepper button:disabled { opacity:.4; }
+.team-stepper output { color:#fffdf1; font-weight:750; font-variant-numeric:tabular-nums; }
+#soloTeamField { flex:1; }
+#soloTeamField select { width:100%; min-height:49px; padding:8px 11px; color:#f7f8ee; background:#0e2820; border:1px solid #ffffff35; border-radius:12px; }
+.alpha-note { margin:8px 0 0; color:#d0ddd3; font-size:.84rem; }
 #setupScreen .hero-actions { margin-top:20px; gap:10px; }
 #setupScreen .hero-actions button { min-height:48px; font-size:.95rem; }
 #setupScreen .overview-grid { margin-top:12px; }
@@ -272,7 +286,6 @@ body:has(#auctionScreen:not(.hidden)) .club-credit { display:none; }
     #setupScreen .opening-card { display:block; }
     #setupScreen .opening-copy { padding:20px 17px 0; }
     #setupScreen .opening-desc { margin-bottom:16px; }
-    #setupScreen .franchise-options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
     #setupScreen .hero-actions { margin-top:15px; }
     #setupScreen .hero-actions button { flex:1 1 auto; }
     #setupScreen .hero-actions .primary-action { flex-basis:100%; }

@@ -66,7 +66,11 @@ function saveClubIdentities() {
 const franchiseCount = element('franchiseCount');
 const franchiseGrid = franchiseCards[0].parentElement;
 const setupTemplate = franchiseCards[0].cloneNode(true);
-const playStyle = element('auctionPlayStyle');
+const playStyles = [...document.querySelectorAll('input[name=auctionPlayStyle]')];
+const removeFranchise = element('removeFranchise');
+const addFranchise = element('addFranchise');
+const minFranchises = 2;
+const maxFranchises = 8;
 const soloTeam = element('soloTeam');
 const savedClubs = readRoomPreference('boundaryClubFranchises', []);
 const extraColors = ['#a16207', '#0f766e', '#be185d', '#475569'];
@@ -91,12 +95,16 @@ function clubIdentity(index) {
     };
 }
 
+function selectedPlayStyle() {
+    return playStyles.find(input => input.checked).value;
+}
+
 function refreshSoloTeams() {
     const selected = Number(soloTeam.value);
     soloTeam.replaceChildren(...appState.teams.map((team, index) => new Option(team.name, String(index))));
     soloTeam.value = String(Math.min(selected, appState.teams.length - 1));
-    element('soloTeamField').hidden = playStyle.value !== 'solo';
-    element('soloAlphaNote').hidden = playStyle.value !== 'solo';
+    element('soloTeamField').hidden = selectedPlayStyle() !== 'solo';
+    element('soloAlphaNote').hidden = selectedPlayStyle() !== 'solo';
 }
 
 function syncFranchiseSetup() {
@@ -142,31 +150,37 @@ function configureFranchises(count) {
         paintSetupCrest(index);
     });
     franchiseCount.value = String(count);
+    removeFranchise.disabled = count <= minFranchises;
+    addFranchise.disabled = count >= maxFranchises;
     element('setupTeamCount').textContent = count;
     refreshSoloTeams();
 }
 
 appState.teams.forEach((team, index) => Object.assign(team, clubIdentity(index)));
 const savedCount = readRoomPreference('boundaryClubFranchiseCount', 4);
-configureFranchises(Number.isInteger(savedCount) && savedCount >= 2 && savedCount <= 8 ? savedCount : 4);
-playStyle.value = readRoomPreference('boundaryClubPlayStyle', 'solo') === 'manual' ? 'manual' : 'solo';
-refreshSoloTeams();
+const savedStyle = readRoomPreference('boundaryClubPlayStyle', 'solo') === 'manual' ? 'manual' : 'solo';
+playStyles.find(input => input.value === savedStyle).checked = true;
+configureFranchises(Number.isInteger(savedCount) && savedCount >= minFranchises && savedCount <= maxFranchises ? savedCount : 4);
 
-franchiseCount.addEventListener('change', () => {
+function changeFranchiseCount(delta) {
     if (window.multiplayer?.active) {
-        franchiseCount.value = String(appState.teams.length);
         showToast('Set the number of franchises before creating a room.', 'warning');
         return;
     }
+    const count = appState.teams.length + delta;
+    if (count < minFranchises || count > maxFranchises) return;
     appState.teams.forEach((team, index) => { savedClubs[index] = { ...team }; });
-    configureFranchises(Number(franchiseCount.value));
+    configureFranchises(count);
     saveClubIdentities();
-    storeRoomPreference('boundaryClubFranchiseCount', appState.teams.length);
-});
-playStyle.addEventListener('change', () => {
+    storeRoomPreference('boundaryClubFranchiseCount', count);
+}
+
+removeFranchise.addEventListener('click', () => changeFranchiseCount(-1));
+addFranchise.addEventListener('click', () => changeFranchiseCount(1));
+playStyles.forEach(input => input.addEventListener('change', () => {
     refreshSoloTeams();
-    storeRoomPreference('boundaryClubPlayStyle', playStyle.value);
-});
+    storeRoomPreference('boundaryClubPlayStyle', selectedPlayStyle());
+}));
 franchiseGrid.addEventListener('input', event => {
     if (event.target.type !== 'color') return;
     const card = event.target.closest('.franchise-card');
