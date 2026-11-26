@@ -54,6 +54,12 @@ Open **Player pool → Import PDF** before starting the auction. Use a Boundary 
 
 Choose **Roster PDF** for a working example you can re-import. For an image-only scan, run OCR first. **Reports** also offers CSV and PDF auction reports and JSON session backups.
 
+## Club settings
+
+Open **Settings** to adjust auction pace, squad limits, and bid increments. The same panel includes display and sound preferences, reports, and backups. **Save settings** and **Cancel** stay visible while you scroll through any section.
+
+![Club settings with the auction pace presets, starting purse, bid clock, and retention controls](assets/screenshots/v5/club-settings.png)
+
 ## Run locally
 
 [Download the v5 ZIP](https://github.com/umarmahtab/BoundaryClub/archive/refs/heads/v5.zip), extract it, and open `index.html` in a modern browser. Keep `assets/` and `sounds/` beside it. The app and its PDF tools run locally without a build step.
