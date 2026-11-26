@@ -300,3 +300,80 @@ body:has(#auctionScreen:not(.hidden)) .club-credit { display:none; }
     .mast-inner .workspace-nav { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); }
     .mast-inner .workspace-nav button { flex-direction:column; gap:3px; justify-content:center; min-width:0; min-height:46px; padding:4px 1px; font-size:11px; line-height:1.15; white-space:normal; }
 }
+
+/* Room panels share the same centered frame and readable controls. */
+.auction-dialog { display:flex; justify-content:center; align-items:center; padding:clamp(12px,2.6vw,38px); }
+.auction-dialog.hidden { display:none; }
+.auction-dialog > .glass-effect { width:min(100%,1200px); max-height:calc(100dvh - 2 * clamp(12px,2.6vw,38px)); min-width:0; }
+.centre-panel,.retention-panel { display:flex; flex-direction:column; overflow:hidden; }
+.centre-panel { height:min(790px,100dvh - 74px); }
+.centre-panel .centre-tabs-header { flex:none; padding:clamp(15px,2vw,26px); border-bottom:1px solid #ffffff22; }
+.centre-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:13px; }
+#auctionCentreModal .centre-heading h2,#retentionModalTitle { margin:0; font-size:clamp(29px,3vw,46px); line-height:1.08; }
+.centre-tabs { display:flex; flex-wrap:wrap; gap:7px; }
+#auctionCentreModal .centre-tab { display:inline-flex; align-items:center; justify-content:center; gap:7px; min-height:44px; padding:8px 13px; border:1px solid #ffffff2e; color:#e5eee6; font-size:.92rem; font-weight:650; transition:none; }
+#auctionCentreModal .centre-tab:hover { background:#ffffff12; }
+#auctionCentreModal .centre-tab[aria-pressed=true] { background:var(--accent); color:#182b21; border-color:transparent; }
+#auctionCentreModal .panel-close { display:grid; place-items:center; flex:none; width:44px; height:44px; border:1px solid #ffffff33; border-radius:10px; color:#f4f7ed; background:#0b241b55; }
+#auctionCentreModal .centre-panel > [id^=centreContent] { min-height:0; padding:clamp(15px,2vw,28px); }
+#auctionCentreModal .centre-section-title { margin:0 0 10px; font-size:clamp(23px,2.2vw,34px); }
+#auctionCentreModal :is(.text-xs,.text-\[10px\],.text-\[11px\]) { font-size:.875rem; line-height:1.35; }
+#auctionCentreModal :is(.text-sm,.dashboard-team) { font-size:.95rem; }
+#auctionCentreModal .centre-panel :is(input,select,.dashboard-team) { min-height:42px; }
+#auctionCentreModal .stats-bar-ref { font-size:.88rem; }
+#auctionCentreModal .bid-journal { min-width:0; }
+#teamDashboardSummary,#teamRoleBreakdown { grid-template-columns:repeat(auto-fit,minmax(min(100%,120px),1fr)); }
+#teamRoleBreakdown .truncate { white-space:normal; }
+#teamDashboardSummary > div { padding:14px; }
+#teamDashboardSummary > div > p:last-child { margin-top:5px; font-size:clamp(17px,1.8vw,24px); }
+
+#retentionModal > .retention-panel { height:min(710px,100dvh - 76px); overflow:hidden; }
+.retention-header { display:flex; align-items:center; gap:14px; padding:clamp(17px,2.4vw,29px); background:var(--green); border-bottom:1px solid #ffffff24; }
+.retention-icon { display:grid; place-items:center; width:50px; height:50px; flex:none; border-radius:12px; color:var(--accent); background:#ffffff13; }
+.retention-icon svg { width:25px; height:25px; }
+.retention-progress { margin:0 0 4px; color:#d1ded3; font-size:.9rem; }
+.retention-workspace { flex:1; display:grid; grid-template-columns:minmax(0,1.65fr) minmax(240px,1fr); gap:16px; min-height:0; overflow:auto; padding:clamp(15px,2vw,26px); }
+.retention-roster,.retention-selection { min-width:0; min-height:0; display:flex; flex-direction:column; gap:10px; }
+#retentionModal .retention-workspace h3 { color:#f1f4e9; font:650 1.05rem/1.25 Inter,"Segoe UI",sans-serif; letter-spacing:0; margin:0; }
+#retentionSearch { min-height:46px; padding:9px 12px; background:#112f24; color:#fff; border:1px solid #698577; border-radius:9px; font-size:1rem; }
+.retention-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-content:start; gap:8px; overflow:auto; flex:1; min-height:140px; padding:2px; }
+#retentionModal .player-retainable,.retained-player { display:flex; align-items:center; gap:9px; min-width:0; min-height:60px; padding:10px; border:1px solid #ffffff29; background:#244238; border-radius:9px; color:#f5f7ee; }
+#retentionModal .player-retainable[aria-pressed=true] { background:#2d5141; border-color:var(--accent); }
+.retention-role-icon,.retention-select-icon { flex:none; color:#eecb78; }
+.retention-player-info { flex:1; min-width:0; overflow-wrap:anywhere; }
+.retention-player-info strong { display:block; font-size:.95rem; }
+.retention-player-info small { display:block; color:#c7d6ca; font-size:.82rem; }
+.retention-selection { padding:14px; background:#142f26; border:1px solid #ffffff24; border-radius:12px; }
+.retention-selection-heading,.retention-totals div { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+#retentionCount { color:var(--accent); white-space:nowrap; }
+.retention-selected-list { flex:1; display:grid; align-content:start; gap:6px; overflow:auto; max-height:33dvh; }
+.retention-empty { padding:12px 3px; color:#c7d6ca; font-size:.95rem; }
+.retained-player button { display:grid; place-items:center; width:36px; flex:none; color:#e2eae2; background:#ffffff14; }
+.retention-totals { padding-top:10px; border-top:1px solid #ffffff2c; font-size:.92rem; }
+.retention-totals div + div { margin-top:5px; }
+.retention-totals dd { font-weight:700; color:var(--accent); text-align:right; }
+.retention-footer { display:flex; justify-content:flex-end; padding:13px clamp(15px,2vw,26px); border-top:1px solid #ffffff24; }
+.retention-footer button,#poolModal button { min-height:46px; font-size:.95rem; }
+#poolModal > .glass-effect { width:min(100%,850px); max-width:none; padding:clamp(16px,3vw,32px); }
+#poolModalTitle { font-size:clamp(27px,3vw,42px); }
+#poolModalPlayerList { max-height:48dvh; }
+#poolModalPlayerList p { font-size:.9rem; }
+#nextPlayerBtn .room-icon { margin-left:3px; }
+@media(min-width:961px) {
+    #auctionScreen .live-stage-ref { min-height:clamp(410px,54dvh,520px); }
+    #auctionScreen .bidding-col-ref { align-self:stretch; justify-content:center; }
+}
+@media(max-width:650px) {
+    .centre-panel { height:calc(100dvh - 24px); }
+    .centre-tabs { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); }
+    #auctionCentreModal .centre-tab { padding:6px 3px; font-size:.8rem; gap:4px; }
+    #auctionCentreModal .centre-tab .room-icon { width:14px; height:14px; }
+    #retentionModal > .retention-panel { height:auto; }
+    .retention-workspace { grid-template-columns:1fr; }
+    .retention-list { max-height:32dvh; }
+    .retention-selected-list { max-height:19dvh; }
+    .retention-footer button { width:100%; }
+}
+@media(max-width:390px) {
+    .retention-list { grid-template-columns:1fr; }
+}

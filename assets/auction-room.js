@@ -1,6 +1,9 @@
 'use strict';
 
 const roomIcons = {
+    check: '<path d="m5 12 4 4L19 6"/>',
+    plus: '<path d="M12 5v14M5 12h14"/>',
+    next: '<path d="m9 6 6 6-6 6"/>',
     layout: '<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 10h18M10 10v11"/>',
     players: '<circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6m2 4a5 5 0 0 1 3 5"/>',
     shield: '<path d="m12 3 8 3v5c0 5-4 8-8 10-4-2-8-5-8-10V6z"/><path d="m9 12 2 2 4-5"/>',

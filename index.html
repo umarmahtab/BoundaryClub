@@ -643,7 +643,7 @@
                     <div class="grid grid-cols-2 gap-2.5 settlement-controls">
                         <button id="manualSellBtn" class="btn-sell-player" disabled>Sell Player (S)</button>
                         <button id="unsoldBtn" class="btn-mark-unsold">Mark Unsold</button>
-                        <button id="nextPlayerBtn" class="hidden btn-resume col-span-2 py-2.5 text-sm font-extrabold">Next Player (N) →</button>
+                        <button id="nextPlayerBtn" class="hidden btn-resume col-span-2 py-2.5 text-sm font-extrabold">Next Player (N) <span data-icon="next" aria-hidden="true"></span></button>
                     </div>
                 </div>
 
@@ -671,33 +671,25 @@
     <!-- ==================== MODALS ==================== -->
 
     <!-- UNIFIED AUCTION CENTRE MODAL (Teams, Remaining, Unsold, Sold Log) -->
-    <div id="auctionCentreModal" class="hidden fixed inset-0 z-40 modal-backdrop flex justify-end p-0 md:p-2">
-        <div class="glass-effect bg-gray-900 w-full md:w-[72vw] lg:w-[65vw] h-full md:h-[96vh] my-auto flex flex-col rounded-none md:rounded-2xl shadow-2xl border-0 md:border md:border-gray-600 overflow-hidden animate-[slideInRight_0.25s_ease-out]">
-            <!-- Modal Header with Tab Navigation -->
-            <div class="centre-tabs-header flex justify-between items-center p-3 md:p-4 border-b border-gray-700 bg-gray-800/90 shrink-0">
-                <div class="flex items-center gap-1 md:gap-2 flex-wrap">
-                    <button id="centreTabOverview" class="centre-tab">Overview</button>
-                    <button id="centreTabTeams" class="centre-tab px-3 py-1.5 rounded-lg text-xs md:text-sm font-bold bg-fuchsia-600 text-white transition flex items-center gap-1.5">
-                        <svg class="w-3.5 h-3.5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg> Teams Dashboard
-                    </button>
-                    <button id="centreTabRemaining" class="centre-tab px-3 py-1.5 rounded-lg text-xs md:text-sm font-bold text-gray-300 hover:text-white hover:bg-gray-700 transition flex items-center gap-1.5">
-                        <svg class="w-3.5 h-3.5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg> Remaining Players
-                    </button>
-                    <button id="centreTabPools" class="centre-tab px-3 py-1.5 rounded-lg text-xs md:text-sm font-bold text-gray-300 hover:text-white hover:bg-gray-700 transition flex items-center gap-1.5">
-                        <svg class="w-3.5 h-3.5 inline mr-1 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg> Pools
-                    </button>
-                    <button id="centreTabUnsold" class="centre-tab px-3 py-1.5 rounded-lg text-xs md:text-sm font-bold text-gray-300 hover:text-white hover:bg-gray-700 transition flex items-center gap-1.5">
-                        <svg class="w-3.5 h-3.5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Unsold Players
-                    </button>
-                    <button id="centreTabLog" class="centre-tab px-3 py-1.5 rounded-lg text-xs md:text-sm font-bold text-gray-300 hover:text-white hover:bg-gray-700 transition flex items-center gap-1.5">
-                        <svg class="w-3.5 h-3.5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> Sold Log
-                    </button>
+    <div id="auctionCentreModal" class="hidden fixed inset-0 z-40 modal-backdrop auction-dialog">
+        <div class="glass-effect centre-panel">
+            <header class="centre-tabs-header">
+                <div class="centre-heading">
+                    <h2>Auction details</h2>
+                    <button id="closeAuctionCentreBtn" class="panel-close" aria-label="Close auction details"><span data-icon="close" aria-hidden="true"></span></button>
                 </div>
-                <button id="closeAuctionCentreBtn" class="text-gray-400 hover:text-white text-2xl font-bold px-2 py-0.5 rounded leading-none transition" title="Close">&times;</button>
-            </div>
+                <nav class="centre-tabs" aria-label="Auction details sections">
+                    <button id="centreTabOverview" type="button" class="centre-tab" aria-controls="centreContentOverview"><span data-icon="layout" aria-hidden="true"></span>Overview</button>
+                    <button id="centreTabTeams" type="button" class="centre-tab" aria-controls="centreContentTeams"><span data-icon="shield" aria-hidden="true"></span>Teams</button>
+                    <button id="centreTabRemaining" type="button" class="centre-tab" aria-controls="centreContentRemaining"><span data-icon="players" aria-hidden="true"></span>Remaining</button>
+                    <button id="centreTabPools" type="button" class="centre-tab" aria-controls="centreContentPools"><span data-icon="stack" aria-hidden="true"></span>Pools</button>
+                    <button id="centreTabUnsold" type="button" class="centre-tab" aria-controls="centreContentUnsold"><span data-icon="clock" aria-hidden="true"></span>Unsold</button>
+                    <button id="centreTabLog" type="button" class="centre-tab" aria-controls="centreContentLog"><span data-icon="report" aria-hidden="true"></span>Sold log</button>
+                </nav>
+            </header>
 
             <section id="centreContentOverview" class="hidden flex-1 overflow-y-auto auction-overview">
-                <h2>Auction overview</h2>
+                <h3>Overview</h3>
                 <div id="stickyStatsBar" class="hidden stats-bar-ref">
             <div style="display: flex; align-items: center; gap: 0.65rem; overflow: hidden; white-space: nowrap;">
                 <span>Record: <span id="recordAmount" style="font-weight: 700; color: #22c55e;">₹0L</span></span>
@@ -795,6 +787,7 @@
 
             <!-- TAB 1: TEAMS DASHBOARD -->
             <div id="centreContentTeams" class="flex-1 overflow-y-auto p-4 flex flex-col space-y-4">
+                <h3 class="centre-section-title">Team dashboard</h3>
                 <!-- Team Selector Tabs -->
                 <div class="flex items-center justify-between gap-2 flex-wrap border-b border-gray-700 pb-3">
                     <div class="flex gap-2 flex-wrap" id="teamsSelectorContainer">
@@ -862,6 +855,7 @@
 
             <!-- TAB 2: REMAINING PLAYERS VIEW -->
             <div id="centreContentRemaining" class="hidden flex-1 overflow-y-auto p-4 flex flex-col space-y-3">
+                <h3 class="centre-section-title">Remaining players</h3>
                 <!-- Filter Controls -->
                 <div class="glass-effect p-3 rounded-xl border border-gray-700 flex flex-wrap gap-2 items-center justify-between shrink-0">
                     <div class="flex flex-wrap gap-2 items-center flex-1">
@@ -925,6 +919,7 @@
 
             <!-- TAB 3: POOL OVERVIEW -->
             <div id="centreContentPools" class="hidden flex-1 overflow-y-auto p-4">
+                <h3 class="centre-section-title">Player pools</h3>
                 <div class="mb-4">
                     <h3 class="text-sm font-bold text-white uppercase tracking-wider">Auction Pools</h3>
                     <p class="text-xs text-gray-500 mt-1">Review progress and jump to any pool.</p>
@@ -934,6 +929,7 @@
 
             <!-- TAB 3: UNSOLD PLAYERS VIEW -->
             <div id="centreContentUnsold" class="hidden flex-1 overflow-y-auto p-4 flex flex-col space-y-3">
+                <h3 class="centre-section-title">Unsold players</h3>
                 <div class="glass-effect p-3 rounded-xl border border-gray-700 flex flex-wrap gap-3 items-center justify-between shrink-0">
                     <div class="flex items-center gap-2 flex-wrap">
                         <span class="text-xs font-bold text-gray-300">Bulk Actions:</span>
@@ -958,6 +954,7 @@
 
             <!-- TAB 4: SOLD LOG VIEW -->
             <div id="centreContentLog" class="hidden flex-1 overflow-y-auto p-4 flex flex-col space-y-3">
+                <h3 class="centre-section-title">Sold players</h3>
                 <div class="glass-effect p-3 rounded-xl border border-gray-700 flex flex-wrap gap-2 items-center justify-between shrink-0">
                     <div class="flex items-center gap-2 flex-wrap flex-1">
                         <input type="text" id="logSearchInput" placeholder="Search player/team..." class="bg-gray-800 text-white text-xs px-3 py-2 rounded-lg border border-gray-600 focus:border-fuchsia-500 outline-none w-44">
@@ -1283,23 +1280,30 @@
     </div>
 
     <!-- RETENTION MODAL -->
-    <div id="retentionModal" class="hidden fixed inset-0 z-40 overflow-y-auto modal-backdrop flex items-center justify-center p-3 md:p-4">
-        <div class="glass-effect bg-gray-900 w-full max-w-5xl p-6 rounded-2xl shadow-2xl border-2 border-fuchsia-500">
-            <h2 id="retentionModalTitle" class="text-2xl md:text-3xl font-bold text-center mb-1 text-fuchsia-300">Retention Phase</h2>
-            <p class="text-center text-gray-300 text-xs md:text-sm mb-4">Select the players this franchise will retain.</p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="md:col-span-2 flex flex-col h-[420px]">
-                     <input type="text" id="retentionSearch" class="w-full bg-gray-900/70 text-white p-2.5 mb-3 rounded-lg border border-gray-600 focus:border-fuchsia-500 outline-none text-xs" placeholder="Search player to retain...">
-                    <div id="retentionPlayerList" class="grid grid-cols-2 md:grid-cols-3 gap-2 overflow-y-auto pr-1 flex-1"></div>
-                </div>
-                <div class="flex flex-col h-[420px] bg-gray-800/40 p-3 rounded-xl border border-gray-700">
-                    <h3 class="text-sm font-bold text-center mb-2 text-white">Your Retentions</h3>
-                    <div id="selectedRetentionsList" class="space-y-2 overflow-y-auto pr-1 flex-1"></div>
-                </div>
+    <div id="retentionModal" class="hidden fixed inset-0 z-40 modal-backdrop auction-dialog">
+        <div class="glass-effect retention-panel">
+            <header class="retention-header">
+                <span class="retention-icon" data-icon="shield" aria-hidden="true"></span>
+                <div><p id="retentionProgress" class="retention-progress"></p>
+                <h2 id="retentionModalTitle">Player retention</h2></div>
+            </header>
+            <div class="retention-workspace">
+                <section class="retention-roster" aria-labelledby="retentionRosterTitle">
+                    <h3 id="retentionRosterTitle">Available players</h3>
+                    <label class="sr-only" for="retentionSearch">Search players to retain</label>
+                    <input type="search" id="retentionSearch" placeholder="Search by player name">
+                    <div id="retentionPlayerList" class="retention-list"></div>
+                </section>
+                <aside class="retention-selection" aria-labelledby="retentionSelectionTitle">
+                    <div class="retention-selection-heading"><h3 id="retentionSelectionTitle">Selected players</h3><span id="retentionCount" aria-live="polite"></span></div>
+                    <div id="selectedRetentionsList" class="retention-selected-list"></div>
+                    <dl class="retention-totals">
+                        <div><dt>Retention cost</dt><dd id="retentionCost"></dd></div>
+                        <div><dt>Purse after retention</dt><dd id="retentionPurse"></dd></div>
+                    </dl>
+                </aside>
             </div>
-            <div class="text-center mt-5">
-                <button id="confirmRetentionsBtn" class="bg-fuchsia-600 hover:bg-fuchsia-500 text-white font-bold py-2.5 px-8 rounded-lg text-sm transition transform hover:scale-105 shadow-lg">Confirm Selections</button>
-            </div>
+            <footer class="retention-footer"><button id="confirmRetentionsBtn" type="button" class="primary-action">Continue without retentions</button></footer>
         </div>
     </div>
 
@@ -1330,8 +1334,8 @@
             </div>
             <div class="space-y-2 text-xs">
                 <div class="flex justify-between items-center p-2 rounded bg-gray-800/50">
-                    <span class="text-gray-300">Bid for Team 1 / 2 / 3 / 4</span>
-                    <span class="font-bold text-fuchsia-300 bg-gray-900 px-2 py-0.5 rounded border border-gray-700">1 / 2 / 3 / 4</span>
+                    <span class="text-gray-300">Bid for teams 1–8</span>
+                    <span class="font-bold text-fuchsia-300 bg-gray-900 px-2 py-0.5 rounded border border-gray-700">1–8</span>
                 </div>
                 <div class="flex justify-between items-center p-2 rounded bg-gray-800/50">
                     <span class="text-gray-300">Sell Player to Highest Bidder</span>
@@ -2459,74 +2463,85 @@ function startRetentionPhase(resuming = false) {
     retentionModal.classList.remove('hidden');
 }
 
+const retentionCosts = [1500, 1200, 900, 600, 300];
+
 function setupRetentionModal(teamIdx) {
     appState.tempRetainedPlayers = [];
-    const totalTeams = appState.teams.length;
-    const currentTeamNum = teamIdx + 1;
-    document.getElementById('retentionModalTitle').innerText = `Retention Phase (${currentTeamNum}/${totalTeams}): ${appState.teams[teamIdx].name}`;
+    document.getElementById('retentionProgress').textContent = appState.humanTeam == null
+        ? `Retention · Team ${teamIdx + 1} of ${appState.teams.length}` : 'Retention · Your franchise';
+    document.getElementById('retentionModalTitle').textContent = appState.teams[teamIdx].name;
+    document.getElementById('retentionSearch').value = '';
+    document.getElementById('retentionPlayerList').scrollTop = 0;
     updateRetentionList();
     updateSelectedRetentions();
 }
 
 function updateRetentionList() {
     const container = document.getElementById('retentionPlayerList');
-    const searchTerm = document.getElementById('retentionSearch').value.toLowerCase();
+    const searchTerm = document.getElementById('retentionSearch').value.trim().toLowerCase();
+    const selected = new Set(appState.tempRetainedPlayers.map(player => player.id));
+    const players = Object.values(appState.playerPools).flat()
+        .filter(player => player.status === 'unsold' && player.name.toLowerCase().includes(searchTerm))
+        .sort((a, b) => a.name.localeCompare(b.name));
 
-    const allPlayers = Object.values(appState.playerPools).flat().filter(p => p.status === 'unsold');
-    const filtered = allPlayers.filter(p => p.name.toLowerCase().includes(searchTerm)).sort((a,b)=> a.name.localeCompare(b.name));
-
-    container.innerHTML = filtered.slice(0, 100).map(p => `
-        <button type="button" class="player-retainable bg-gray-800 p-2 rounded cursor-pointer border border-transparent hover:border-gray-500 flex justify-between items-center" onclick="toggleRetention(${p.id})">
-            <div>
-                <p class="font-bold text-xs">${getRoleSvg(p.category)} ${escapeText(p.name)}</p>
-                <p class="text-[10px] text-gray-300">${escapeText(p.category)} · ${escapeText(p.country)}</p>
-            </div>
-            <div class="text-fuchsia-300 text-xs font-bold">${formatPrice(p.basePrice)}</div>
+    container.innerHTML = players.length ? players.map(player => `
+        <button type="button" class="player-retainable" data-retention-player="${player.id}" aria-pressed="${selected.has(player.id)}">
+            <span class="retention-role-icon">${getRoleSvg(player.category)}</span>
+            <span class="retention-player-info"><strong>${escapeText(player.name)}</strong><small>${escapeText(player.category)} · ${escapeText(player.country)}</small></span>
+            <span class="retention-select-icon">${roomIcon(selected.has(player.id) ? 'check' : 'plus')}</span>
         </button>
-    `).join('');
-
-    Array.from(container.children).forEach(child => {
-        const pid = parseInt(child.getAttribute('onclick').match(/\d+/)[0]);
-        if (appState.tempRetainedPlayers.find(tp => tp.id === pid)) {
-            child.classList.add('selected');
-        }
-    });
+    `).join('') : '<p class="retention-empty">No players match this search.</p>';
 }
 
 function toggleRetention(pid) {
-    const all = Object.values(appState.playerPools).flat();
-    const player = all.find(p => p.id === pid);
-
-    const idx = appState.tempRetainedPlayers.findIndex(p => p.id === pid);
-    if (idx > -1) {
-        appState.tempRetainedPlayers.splice(idx, 1);
-    } else {
-        if (appState.tempRetainedPlayers.length < (appState.settings.retentionSlots || 5)) {
-            appState.tempRetainedPlayers.push(player);
-        } else {
-            showToast("Retention limit reached for this franchise.", "warning");
-        }
+    const player = Object.values(appState.playerPools).flat().find(player => player.id === pid);
+    if (!player) return;
+    const selected = appState.tempRetainedPlayers;
+    const index = selected.findIndex(player => player.id === pid);
+    if (index !== -1) selected.splice(index, 1);
+    else if (selected.length < (appState.settings.retentionSlots || retentionCosts.length)) selected.push(player);
+    else {
+        showToast('Retention limit reached for this franchise.', 'warning');
+        return;
     }
     updateRetentionList();
     updateSelectedRetentions();
+    document.querySelector(`[data-retention-player="${pid}"]`)?.focus({ preventScroll: true });
     saveState();
 }
 
 function updateSelectedRetentions() {
-    const list = document.getElementById('selectedRetentionsList');
-    const costs = [1500, 1200, 900, 600, 300];
-
-    list.innerHTML = appState.tempRetainedPlayers.map((p, i) => `
-        <div class="bg-fuchsia-900/30 border border-fuchsia-500 p-2 rounded flex justify-between items-center">
-            <div><p class="font-bold text-xs">${getRoleSvg(p.category)} ${escapeText(p.name)}</p><p class="text-[10px] text-gray-300">Slot ${i+1} Deduction</p></div>
-            <div class="font-bold text-sm text-white">₹${formatPrice(costs[i])}</div>
+    const selected = appState.tempRetainedPlayers;
+    const costs = retentionCosts.slice(0, selected.length);
+    const total = costs.reduce((sum, cost) => sum + cost, 0);
+    const team = appState.teams[appState.currentRetentionTeamIndex];
+    document.getElementById('retentionCount').textContent = `${selected.length} / ${appState.settings.retentionSlots || retentionCosts.length}`;
+    document.getElementById('retentionCost').textContent = '₹' + formatPrice(total);
+    document.getElementById('retentionPurse').textContent = '₹' + formatPrice(team.purse - total);
+    document.getElementById('confirmRetentionsBtn').textContent = selected.length ? 'Confirm retentions' : 'Continue without retentions';
+    document.getElementById('selectedRetentionsList').innerHTML = selected.length ? selected.map((player, index) => `
+        <div class="retained-player">
+            <span class="retention-player-info"><strong>${escapeText(player.name)}</strong><small>Slot ${index + 1} · ₹${formatPrice(costs[index])}</small></span>
+            <button type="button" data-remove-retention="${player.id}" aria-label="Remove ${escapeText(player.name)}">${roomIcon('close')}</button>
         </div>
-    `).join('');
+    `).join('') : '<p class="retention-empty">No players selected.</p>';
 }
+
+document.getElementById('retentionPlayerList').addEventListener('click', event => {
+    const button = event.target.closest('[data-retention-player]');
+    if (button) toggleRetention(Number(button.dataset.retentionPlayer));
+});
+document.getElementById('selectedRetentionsList').addEventListener('click', event => {
+    const button = event.target.closest('[data-remove-retention]');
+    if (button) {
+        toggleRetention(Number(button.dataset.removeRetention));
+        if (!document.activeElement?.closest('#retentionModal')) document.getElementById('retentionSearch').focus();
+    }
+});
 
 document.getElementById('confirmRetentionsBtn').addEventListener('click', () => {
     const team = appState.teams[appState.currentRetentionTeamIndex];
-    const costs = [1500, 1200, 900, 600, 300];
+    const costs = retentionCosts;
     if (costs.slice(0, appState.tempRetainedPlayers.length).reduce((sum, cost) => sum + cost, 0) > team.purse) {
         showToast('These retentions exceed the franchise purse.', 'warning'); return;
     }
@@ -3342,7 +3357,6 @@ function openAuctionCentre(tabName = 'teams') {
     appState.activeCentreTab = tabName;
     auctionCentreModal.classList.remove('hidden');
 
-    // Update Tab Header Styling
     const tabBtns = {
         overview: document.getElementById('centreTabOverview'),
         teams: document.getElementById('centreTabTeams'),
@@ -3362,14 +3376,9 @@ function openAuctionCentre(tabName = 'teams') {
     };
 
     Object.keys(tabBtns).forEach(key => {
-        tabBtns[key].setAttribute('aria-pressed', String(key === tabName));
-        if (key === tabName) {
-            tabBtns[key].className = "centre-tab px-3 py-1.5 rounded-lg text-xs md:text-sm font-bold bg-fuchsia-600 text-white shadow";
-            tabContents[key].classList.remove('hidden');
-        } else {
-            tabBtns[key].className = "centre-tab px-3 py-1.5 rounded-lg text-xs md:text-sm font-bold text-gray-300 hover:text-white hover:bg-gray-700 transition";
-            tabContents[key].classList.add('hidden');
-        }
+        const active = key === tabName;
+        tabBtns[key].setAttribute('aria-pressed', String(active));
+        tabContents[key].classList.toggle('hidden', !active);
     });
 
     if (tabName === 'teams') renderTeamsDashboard();
