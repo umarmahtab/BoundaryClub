@@ -209,26 +209,74 @@ function isComputerTeam(index) {
     return appState.humanTeam != null && index !== appState.humanTeam && !window.multiplayer?.active;
 }
 
+// Game balance values in lakhs. These estimates can be overridden in the player database.
+const marqueeBidCaps = new Map(Object.entries({
+    'Virat Kohli': 2100, 'Jasprit Bumrah': 2200, 'Rishabh Pant': 2400,
+    'Shreyas Iyer': 2300, 'Nicholas Pooran': 2000, 'Heinrich Klaasen': 1900,
+    'Yashasvi Jaiswal': 1700, 'Arshdeep Singh': 1600, 'Pat Cummins': 1800,
+    'Travis Head': 1500, 'Rashid Khan': 1700, 'Hardik Pandya': 1700,
+    'Suryakumar Yadav': 1900, 'Ravindra Jadeja': 1600
+}));
+
+function computerBidCap(player) {
+    if (Number.isSafeInteger(player.aiMaxBid) && player.aiMaxBid >= 0) return player.aiMaxBid;
+    const base = Number(player.basePrice) || 30;
+    const estimate = marqueeBidCaps.get(player.name) ?? base *
+        (base >= 200 ? 5 : base >= 100 ? 4 : 3);
+    return Math.max(base, estimate);
+}
+
+function computerBidder(player, offer) {
+    const { maxSquadSize, maxOverseasPlayers } = appState.settings;
+    const overseas = Boolean(player.country && player.country.trim().toLowerCase() !== 'india');
+    const playerCap = computerBidCap(player);
+    const candidates = [];
+    appState.teams.forEach((team, index) => {
+        if (!isComputerTeam(index) || index === appState.highestBidder ||
+            team.squad.length >= maxSquadSize || (overseas && getOverseasCount(team) >= maxOverseasPlayers)) return;
+        const style = Array.from(player.name).reduce((total, letter) => (total * 31 + letter.charCodeAt(0)) >>> 0, index + 1);
+        const roleCount = team.squad.filter(member => member.category === player.category).length;
+        const preference = (0.75 + (style % 26) / 100) / (1 + roleCount * 0.18);
+        const reserve = Math.max(0, Math.min(10, maxSquadSize) - team.squad.length - 1) * 20;
+        const budget = Math.min(team.purse - reserve, playerCap, Math.max(player.basePrice, playerCap * preference));
+        if (offer <= budget) candidates.push(index);
+    });
+    return candidates.length ? candidates[Math.floor(Math.random() * candidates.length)] : null;
+}
+
+function setComputerPass(passed) {
+    appState.computersPassed = passed;
+    const notice = element('computerPass');
+    notice.hidden = !passed;
+    if (passed) {
+        const leader = appState.highestBidder;
+        notice.textContent = leader === appState.humanTeam
+            ? 'Computer teams are out. You can sell now.'
+            : leader === null
+                ? 'Computer teams passed. Buy at base price or mark unsold.'
+                : 'Computer teams have no further bids. You can still bid or settle the lot.';
+    }
+    refreshComputerSale();
+}
+
+function refreshComputerSale() {
+    const button = element('manualSellBtn');
+    const canBuy = appState.computersPassed && appState.highestBidder === null && appState.phase === 'bidding';
+    button.textContent = canBuy ? 'Buy at ₹' + formatPrice(nextOfferAmount(1)) : 'Sell Player (S)';
+    if (canBuy) button.disabled = appState.timerPaused || bidButtons[appState.humanTeam].disabled;
+    if (canBuy && !button.disabled) button.classList.remove('opacity-50', 'cursor-not-allowed');
+}
+
 function tryComputerBid() {
     if (appState.humanTeam == null || window.multiplayer?.active) return false;
     const player = getCurrentPlayer();
     if (!player || appState.phase !== 'bidding') return false;
-    const offer = nextOfferAmount(1);
-    const { initialPurse, maxSquadSize, maxOverseasPlayers } = appState.settings;
-    const overseas = player.country?.trim().toLowerCase() !== 'india';
-    const offers = appState.teams.map((team, index) => {
-        if (!isComputerTeam(index) || index === appState.highestBidder || team.purse < offer ||
-            team.squad.length >= maxSquadSize || (overseas && getOverseasCount(team) >= maxOverseasPlayers)) return null;
-        const style = Array.from(player.name).reduce((total, letter) => (total * 31 + letter.charCodeAt(0)) >>> 0, index + 1);
-        const roleCount = team.squad.filter(member => member.category === player.category).length;
-        const target = (initialPurse / Math.min(18, maxSquadSize)) * (0.7 + (style % 70) / 100);
-        const reserve = Math.max(0, Math.min(10, maxSquadSize) - team.squad.length - 1) * 20;
-        const ceiling = Math.min(team.purse - reserve, Math.max(player.basePrice, target / (1 + roleCount * 0.22)));
-        return ceiling >= offer ? { index, ceiling } : null;
-    }).filter(Boolean);
-    if (!offers.length) return false;
-    const bidder = offers[Math.floor(Math.random() * offers.length)];
-    bid(bidder.index, true);
+    const bidder = computerBidder(player, nextOfferAmount(1));
+    if (bidder === null) {
+        setComputerPass(true);
+        return false;
+    }
+    bid(bidder, true);
     return true;
 }
 

@@ -38,6 +38,12 @@ Return in the same browser and choose **Resume** to pick up a saved auction.
 
 </details>
 
+## Solo auction
+
+Select **Solo vs computer** and choose your franchise. Computer teams bid quickly and announce when they have no further bids. If you’re leading, you can sell immediately. If nobody has bid, you can buy at base price or mark the player unsold.
+
+In **Player pool**, edit any player’s **Computer bid ceiling** in lakhs. Leave it blank to use the game’s suggested valuation, or enter zero to make computer teams pass. Teams can stop below the ceiling depending on their purse and squad needs. Roster CSVs preserve any ceilings you set.
+
 ## Bring your own players
 
 Open **Player pool → Import PDF** before starting the auction. Use a Boundary Club roster PDF or a selectable-text table with the four columns below. The preview shows accepted and rejected rows before you add players or replace the database.
