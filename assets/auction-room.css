@@ -189,3 +189,92 @@ body.theme-fuchsia {--green:#104f3c;--accent:#f3ca70}
 
 .computer-pass { margin:8px 0; color:var(--ink); background:var(--card); border:1px solid var(--line); border-radius:8px; padding:7px 10px; font-size:.85rem; }
 .computer-pass[hidden] { display:none; }
+
+/* Setup and auction floor */
+#setupScreen .opening-card { grid-template-columns:minmax(0,1.25fr) minmax(0,1fr); }
+#setupScreen .opening-copy { padding:clamp(24px,4vw,50px); }
+#setupScreen .opening-card h1 { max-width:none; margin:0; }
+#setupScreen .opening-desc { max-width:none; margin:9px 0 23px; }
+#setupScreen .franchise-options { gap:10px; margin:0; }
+#setupScreen .franchise-options label { display:grid; gap:5px; color:#dfebe2; font-weight:600; align-content:start; }
+#setupScreen .franchise-options label[hidden] { display:none; }
+#setupScreen .franchise-options select { min-height:46px; min-width:0; padding:8px 12px; color:#f7f8ee; background:#142f26; border-color:#71877a; }
+.alpha-note { margin:12px 0 0; color:#e3ebe1; font-size:.88rem; }
+.alpha-note strong { display:inline-block; padding:2px 7px; margin-right:4px; border:1px solid #d7bc73; border-radius:6px; color:#f4d37d; }
+#setupScreen .hero-actions { margin-top:20px; gap:10px; }
+#setupScreen .hero-actions button { min-height:48px; font-size:.95rem; }
+#setupScreen .overview-grid { margin-top:12px; }
+#setupScreen .lineup-head { margin-top:22px; }
+
+#app:has(#auctionScreen:not(.hidden)),body:has(#auctionScreen:not(.hidden)) .mast-inner {
+    width:min(100% - 2 * clamp(16px,3.1vw,60px),1900px);
+}
+#app:has(#auctionScreen:not(.hidden)) { padding:clamp(14px,2vw,30px) 0 20px; }
+body:has(#auctionScreen:not(.hidden)) .club-credit { display:none; }
+#auctionScreen .live-head { margin:0 0 16px; gap:14px; }
+#auctionScreen .live-head h1 { margin:0; font-size:clamp(34px,3.2vw,54px); }
+.floor-progress { margin:4px 0 0; color:var(--muted); font-size:.92rem; }
+.floor-progress:empty { display:none; }
+.floor-tools,.overview-actions { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+.floor-tools .secondary-action,.overview-actions button { min-height:44px; padding:8px 14px; }
+.floor-tools [hidden],#auctionPausedBottomBar[hidden] { display:none; }
+#auctionScreen .live-stage-ref { gap:clamp(12px,1.35vw,22px); }
+#auctionScreen :is(.player-box-ref,.center-stage-ref) { padding:clamp(16px,2.1vw,34px); }
+#auctionScreen .player-label { margin-bottom:8px; }
+#auctionScreen .center-stage-ref { gap:12px; }
+#auctionScreen .center-stage-ref .my-auto { margin-block:0; }
+#auctionScreen .highest-bidder-pill { font-size:.93rem; }
+#auctionScreen .bidding-col-ref { background:var(--card); border:1px solid var(--line); padding:clamp(13px,1.5vw,24px); gap:12px; }
+.bidding-heading { margin:0; color:var(--ink); font:500 clamp(23px,2vw,35px)/1.12 var(--display); letter-spacing:-.035em; }
+#auctionScreen .bid-size { padding:5px 8px 5px 12px; font-size:.92rem; }
+#auctionScreen .bid-size button { min-height:40px; min-width:42px; font-size:.93rem; }
+#auctionScreen .team-bid-grid-ref { align-content:stretch; grid-auto-rows:minmax(92px,1fr); }
+#auctionScreen .bid-team-card-btn { padding:clamp(11px,1.2vw,19px); }
+#auctionScreen .team-btn-name { font-size:clamp(14px,1.1vw,18px); }
+#auctionScreen .team-bid-action-val { font-size:clamp(22px,2vw,32px); }
+#auctionScreen .team-btn-sub,#auctionScreen .team-btn-reason { font-size:.83rem; }
+#auctionScreen .settlement-controls { grid-template-columns:repeat(auto-fit,minmax(min(100%,128px),1fr)); }
+#auctionScreen .settlement-controls button { min-height:50px; font-size:1rem; }
+#auctionScreen .settlement-controls button:last-child { grid-column:1/-1; }
+#auctionScreen #pauseTimerBtn { min-height:48px; font-size:1rem; }
+#auctionScreen.solo-floor .team-bid-grid-ref { grid-template-columns:1fr; }
+#auctionScreen.solo-floor .computer-team-card { display:none; }
+#auctionScreen.solo-floor .bid-team-card-btn:not(:disabled) { background:color-mix(in srgb,var(--team) 16%,var(--card)); }
+#auctionScreen.solo-floor .team-bid-action-val { font-size:clamp(30px,3.6vw,54px); }
+
+.auction-overview { display:grid; align-content:start; gap:15px; padding:clamp(16px,2.5vw,30px); }
+.auction-overview.hidden { display:none; }
+.auction-overview h2 { font-size:clamp(24px,3vw,42px); }
+.auction-overview h3 { font-size:1.3rem; }
+.auction-overview .purse-grid-ref { grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr)); }
+.overview-lot { display:grid; gap:10px; }
+.auction-overview .on-deck { border:1px solid var(--line); color:var(--ink); background:var(--card); }
+.auction-overview .bid-journal { margin:0; }
+.overview-actions #floorFinish { margin-left:auto; background:#794035; color:#fff; }
+#auctionCentreModal .centre-tab { min-height:42px; }
+#auctionCentreModal #closeAuctionCentreBtn { min-width:44px; min-height:44px; align-self:flex-start; }
+@media(min-width:961px){
+    #auctionScreen .live-stage-ref { grid-template-columns:minmax(0,1fr) minmax(0,.88fr) minmax(0,1.3fr); min-height:clamp(420px,calc(100dvh - 216px),760px); }
+    #auctionScreen .timer-circle-wrap { width:clamp(100px,12vh,148px); height:auto; aspect-ratio:1; }
+    #auctionScreen .bid-huge-val { font-size:clamp(44px,4.7vw,76px); }
+    #auctionScreen .player-name-ref { font-size:clamp(38px,4vw,75px); }
+}
+@media(max-width:600px){
+    #setupScreen .opening-card { display:block; }
+    #setupScreen .opening-copy { padding:20px 17px 0; }
+    #setupScreen .opening-desc { margin-bottom:16px; }
+    #setupScreen .franchise-options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
+    #setupScreen .hero-actions { margin-top:15px; }
+    #setupScreen .hero-actions button { flex:1 1 auto; }
+    #setupScreen .hero-actions .primary-action { flex-basis:100%; }
+    #auctionScreen .live-head { align-items:flex-start; flex-direction:column; }
+    .floor-tools { width:100%; }
+    .floor-tools .secondary-action { padding-inline:8px; }
+    #floorFullscreen { display:none; }
+    #auctionScreen .player-name-ref { overflow-wrap:normal; font-size:clamp(25px,7vw,38px); }
+    #auctionScreen .team-bid-grid-ref { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media(max-width:600px){
+    .mast-inner .workspace-nav { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); }
+    .mast-inner .workspace-nav button { flex-direction:column; gap:3px; justify-content:center; min-width:0; min-height:46px; padding:4px 1px; font-size:11px; line-height:1.15; white-space:normal; }
+}

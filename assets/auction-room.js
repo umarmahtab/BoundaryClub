@@ -26,7 +26,6 @@ document.querySelectorAll('[data-icon]').forEach(node => { node.innerHTML = room
 element('resetAuctionBtn').innerHTML = roomIcon('reset');
 element('helpBtn').innerHTML = roomIcon('keyboard');
 element('settingsBtn').innerHTML = roomIcon('sliders') + '<span>Settings</span>';
-element('showPoolsBtn').innerHTML = roomIcon('stack') + 'Pools';
 
 const crestNames = ['falcon', 'knight', 'crown', 'thunder', 'tiger', 'star'];
 function readRoomPreference(key, fallback) {
@@ -97,6 +96,7 @@ function refreshSoloTeams() {
     soloTeam.replaceChildren(...appState.teams.map((team, index) => new Option(team.name, String(index))));
     soloTeam.value = String(Math.min(selected, appState.teams.length - 1));
     element('soloTeamField').hidden = playStyle.value !== 'solo';
+    element('soloAlphaNote').hidden = playStyle.value !== 'solo';
 }
 
 function syncFranchiseSetup() {
@@ -193,6 +193,7 @@ function syncFloorTeams() {
         const button = bidButtons[0].cloneNode(true);
         button.id = 'bidTeam' + (index + 1);
         button.dataset.team = index;
+        button.querySelector('.team-key-chip').textContent = index + 1;
         const card = purseCards[0].cloneNode(true);
         card.id = 'purseTeam' + (index + 1) + 'Info';
         bidButtons.push(button);

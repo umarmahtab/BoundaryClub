@@ -439,43 +439,25 @@
 
     <main id="app">
 
-        <!-- Sticky Stats Bar (Matching Reference Screenshot) -->
-        <div id="stickyStatsBar" class="hidden stats-bar-ref">
-            <div style="display: flex; align-items: center; gap: 0.65rem; overflow: hidden; white-space: nowrap;">
-                <span>Record: <span id="recordAmount" style="font-weight: 700; color: #22c55e;">₹0L</span></span>
-                <span style="color: rgba(255,255,255,0.15);">|</span>
-                <span>Player: <span id="recordPlayer" style="font-weight: 700; color: #ffffff;">-</span></span>
-                <span style="color: rgba(255,255,255,0.15);">|</span>
-                <span>Team: <span id="recordTeam" style="font-weight: 700; color: #ffffff;">-</span></span>
-                <span style="color: rgba(255,255,255,0.15);">|</span>
-                <span>Sold: <span id="statSoldPlayers" style="font-weight: 700; color: #ffffff;">0</span>/<span id="statPoolSize"></span></span>
-                <span style="color: rgba(255,255,255,0.15);">|</span>
-                <span>Spent: <span id="statTotalSpent" style="font-weight: 700; color: #22c55e;">₹0L</span></span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; padding-left: 0.75rem; border-left: 1px solid rgba(255,255,255,0.08);">
-                <span id="statCurrentRound" style="color: #cbd5e1; font-weight: 600;">Player 1 of 10 · 238 left</span>
-            </div>
-        </div>
-
         <section id="setupScreen" aria-labelledby="setupTitle">
             <div class="opening-card">
                 <div class="opening-copy">
-                    <p class="hero-kicker"><span class="status-light"></span>Pre-auction</p>
-                    <h1 id="setupTitle">The auction <em>room.</em></h1>
-                    <p class="opening-desc">Set up your franchises and take the first player under the hammer.</p>
-                    <div class="hero-actions"><button id="startAuctionBtn" class="primary-action"><span data-icon="gavel" aria-hidden="true"></span>Start auction</button><button id="setupRules" class="hero-secondary"><span data-icon="sliders" aria-hidden="true"></span>Auction rules</button><button id="multiplayerBtn" class="hero-secondary" type="button" onclick="window.multiplayer && window.multiplayer.openModal()"><span data-icon="players" aria-hidden="true"></span>Multiplayer Room</button></div>
+                    <h1 id="setupTitle">Cricket <em>auction.</em></h1>
+                    <p class="opening-desc">Choose your teams and start bidding.</p>
+                    <div class="franchise-options">
+                        <label>Teams <select id="franchiseCount" aria-label="Number of franchises">
+                            <option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option><option>7</option><option>8</option>
+                        </select></label>
+                        <label>Play style <select id="auctionPlayStyle"><option value="solo">Solo vs computer (Alpha)</option><option value="manual" selected>Control all teams</option></select></label>
+                        <label id="soloTeamField" hidden>Your franchise <select id="soloTeam"></select></label>
+                    </div>
+                    <p id="soloAlphaNote" class="alpha-note" hidden><strong>Alpha</strong> Computer bidding is still being tuned.</p>
+                    <div class="hero-actions"><button id="startAuctionBtn" class="primary-action"><span data-icon="gavel" aria-hidden="true"></span>Start auction</button><button id="setupRules" class="hero-secondary"><span data-icon="sliders" aria-hidden="true"></span>Auction rules</button><button id="multiplayerBtn" class="hero-secondary" type="button" onclick="window.multiplayer && window.multiplayer.openModal()"><span data-icon="players" aria-hidden="true"></span>Multiplayer</button></div>
                 </div>
                 <div class="stadium-art" aria-hidden="true"><img src="assets/club-stadium.svg" alt=""></div>
             </div>
             <dl class="overview-grid"><div class="metric"><span class="metric-icon"><span data-icon="shield" aria-hidden="true"></span></span><div><dt>Franchises</dt><dd id="setupTeamCount">4</dd></div></div><div class="metric"><span class="metric-icon"><span data-icon="players" aria-hidden="true"></span></span><div><dt>Player pool</dt><dd id="setupPlayerCount">—</dd></div></div><div class="metric"><span class="metric-icon"><span data-icon="wallet" aria-hidden="true"></span></span><div><dt>Starting purse</dt><dd id="setupPurse">—</dd></div></div><div class="metric"><span class="metric-icon"><span data-icon="clock" aria-hidden="true"></span></span><div><dt>Bid clock</dt><dd id="setupClock">—</dd></div></div></dl>
-            <div class="section-head lineup-head"><div><p class="eyebrow"><span class="rule"></span>Franchise management</p><h2>Franchise lineup</h2></div><button id="managePoolBtn" class="secondary-action"><span data-icon="players" aria-hidden="true"></span>Manage players</button></div>
-            <div class="franchise-options">
-                <label>Franchises <select id="franchiseCount" aria-label="Number of franchises">
-                    <option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option><option>7</option><option>8</option>
-                </select></label>
-                <label>Play style <select id="auctionPlayStyle"><option value="solo">Solo vs computer</option><option value="manual" selected>Control all teams</option></select></label>
-                <label id="soloTeamField" hidden>Your franchise <select id="soloTeam"></select></label>
-            </div>
+            <div class="section-head lineup-head"><div><h2>Franchise lineup</h2></div><button id="managePoolBtn" class="secondary-action"><span data-icon="players" aria-hidden="true"></span>Manage players</button></div>
             <div class="franchise-grid"><article class="franchise-card" style="--team:#226f92">
                 <div class="franchise-banner"><span class="franchise-index">Franchise 01</span><button class="crest crest-main" data-edit-team="0" aria-label="Change United logo"></button><span class="crest-echo" aria-hidden="true"></span></div>
                 <div class="franchise-body"><label class="name-field"><span class="sr-only">Franchise 1 name</span><input id="team1Name" class="franchise-name" value="United" maxlength="20" autocomplete="off" spellcheck="false"><span data-icon="pencil" aria-hidden="true"></span></label>
@@ -493,102 +475,15 @@
 
         <!-- AUCTION SCREEN -->
         <div id="auctionScreen" class="hidden">
-            <div class="section-head live-head"><div><p class="eyebrow">Auction floor</p><h1>Live bidding</h1></div><button id="floorFinish" class="secondary-action">Finish auction</button></div>
-            <!-- Quick Purse Info Tiles (4 Team Cards) -->
-            <div class="purse-grid-ref">
-                <div id="purseTeam1Info" class="team-purse-card team1-card">
-                    <div style="display: flex; align-items: center; overflow: hidden;">
-                        <div class="team-badge-icon" style="color: #38bdf8;">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3z"/></svg>
-                        </div>
-                        <div style="overflow: hidden;">
-                            <p style="font-size: 0.82rem; font-weight: 800; color: #ffffff; text-transform: uppercase; margin: 0; line-height: 1.1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">United</p>
-                            <p style="font-size: 0.65rem; color: #94a3b8; margin: 0.15rem 0 0 0; line-height: 1;">Squad: <span class="font-bold text-gray-200">0</span>/25 · OS: <span class="font-bold text-gray-200">0</span>/8</p>
-                        </div>
-                    </div>
-                    <p style="font-size: 0.95rem; font-weight: 900; color: #ffffff; margin: 0; white-space: nowrap;">₹0L</p>
-                </div>
-
-                <div id="purseTeam2Info" class="team-purse-card team2-card">
-                    <div style="display: flex; align-items: center; overflow: hidden;">
-                        <div class="team-badge-icon" style="color: #ef4444;">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 3.31 1.61 6.24 4.09 8.04L6 22l4-2h4l4 2-.09-1.96C20.39 18.24 22 15.31 22 12c0-5.52-4.48-10-10-10zm0 4a3 3 0 110 6 3 3 0 010-6z"/></svg>
-                        </div>
-                        <div style="overflow: hidden;">
-                            <p style="font-size: 0.82rem; font-weight: 800; color: #ffffff; text-transform: uppercase; margin: 0; line-height: 1.1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Knights</p>
-                            <p style="font-size: 0.65rem; color: #94a3b8; margin: 0.15rem 0 0 0; line-height: 1;">Squad: <span class="font-bold text-gray-200">0</span>/25 · OS: <span class="font-bold text-gray-200">0</span>/8</p>
-                        </div>
-                    </div>
-                    <p style="font-size: 0.95rem; font-weight: 900; color: #ffffff; margin: 0; white-space: nowrap;">₹0L</p>
-                </div>
-
-                <div id="purseTeam3Info" class="team-purse-card team3-card">
-                    <div style="display: flex; align-items: center; overflow: hidden;">
-                        <div class="team-badge-icon" style="color: #22c55e;">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .55-.45 1-1 1H6c-.55 0-1-.45-1-1v-1h14v1z"/></svg>
-                        </div>
-                        <div style="overflow: hidden;">
-                            <p style="font-size: 0.82rem; font-weight: 800; color: #ffffff; text-transform: uppercase; margin: 0; line-height: 1.1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Invincibles</p>
-                            <p style="font-size: 0.65rem; color: #94a3b8; margin: 0.15rem 0 0 0; line-height: 1;">Squad: <span class="font-bold text-gray-200">0</span>/25 · OS: <span class="font-bold text-gray-200">0</span>/8</p>
-                        </div>
-                    </div>
-                    <p style="font-size: 0.95rem; font-weight: 900; color: #ffffff; margin: 0; white-space: nowrap;">₹0L</p>
-                </div>
-
-                <div id="purseTeam4Info" class="team-purse-card team4-card">
-                    <div style="display: flex; align-items: center; overflow: hidden;">
-                        <div class="team-badge-icon" style="color: #c084fc;">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                        </div>
-                        <div style="overflow: hidden;">
-                            <p style="font-size: 0.82rem; font-weight: 800; color: #ffffff; text-transform: uppercase; margin: 0; line-height: 1.1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Thunders</p>
-                            <p style="font-size: 0.65rem; color: #94a3b8; margin: 0.15rem 0 0 0; line-height: 1;">Squad: <span class="font-bold text-gray-200">0</span>/25 · OS: <span class="font-bold text-gray-200">0</span>/8</p>
-                        </div>
-                    </div>
-                    <p style="font-size: 0.95rem; font-weight: 900; color: #ffffff; margin: 0; white-space: nowrap;">₹0L</p>
-                </div>
-            </div>
-
-            <!-- UNIFIED AUCTION CENTRE TOOLBAR -->
-            <div class="centre-bar-ref">
-                <div class="centre-btn-group">
-                    <span class="centre-label">Auction centre</span><button id="showPoolsBtn" class="centre-pill-btn">Pools</button>
-                    <button id="showTeamsBtn" class="centre-pill-btn">
-                        <svg class="w-3.5 h-3.5 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                        <span>Teams</span>
-                    </button>
-                    <button id="showRemainingBtn" class="centre-pill-btn">
-                        <svg class="w-3.5 h-3.5 text-fuchsia-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
-                        <span>Remaining</span>
-                    </button>
-                    <button id="showUnsoldBtn" class="centre-pill-btn">
-                        <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <span>Unsold</span>
-                    </button>
-                    <button id="showLogBtn" class="centre-pill-btn">
-                        <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                        <span>Sold Log</span>
-                    </button>
-                    <button id="undoBtn" class="centre-pill-btn" disabled>
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a5 5 0 015 5v2m-15-7l4-4m-4 4l4 4"/></svg>
-                        <span>Undo</span>
-                    </button>
-                </div>
-
-                <div style="display: flex; align-items: center; gap: 0.65rem;">
-                    <!-- Auctioneer Status Badge -->
+            <div class="section-head live-head">
+                <div><h1>Live bidding</h1><p id="floorProgress" class="floor-progress"></p></div>
+                <div class="floor-tools">
                     <div id="auctioneerStatusBadge" class="status-pill-blue">
                         <span id="auctioneerStatusDot" style="display: inline-block; width: 6px; height: 6px; border-radius: 9999px; background: #60a5fa;"></span>
                         <span id="auctioneerStatusText">AUCTION PAUSED</span>
                     </div>
-
-                    <div class="shortcuts-strip hidden lg:flex">
-                        <span class="centre-pill-btn" style="padding: 0.2rem 0.45rem; font-size: 0.65rem; color: #94a3b8; font-family: monospace;">1/2/3/4 Bid</span>
-                        <span class="centre-pill-btn" style="padding: 0.2rem 0.45rem; font-size: 0.65rem; color: #94a3b8; font-family: monospace;">S Sell</span>
-                        <span class="centre-pill-btn" style="padding: 0.2rem 0.45rem; font-size: 0.65rem; color: #94a3b8; font-family: monospace;">N Next</span>
-                        <span class="centre-pill-btn" style="padding: 0.2rem 0.45rem; font-size: 0.65rem; color: #94a3b8; font-family: monospace;">Space Pause</span>
-                        <span class="centre-pill-btn" style="padding: 0.2rem 0.45rem; font-size: 0.65rem; color: #94a3b8; font-family: monospace;">R Restart</span>
-                    </div>
+                    <button id="showAuctionDetailsBtn" class="secondary-action" aria-haspopup="dialog"><span data-icon="stack" aria-hidden="true"></span>Auction details</button>
+                    <button id="floorFullscreen" class="secondary-action" type="button" hidden>Full screen</button>
                 </div>
             </div>
             <!-- LIVE BIDDING STAGE -->
@@ -625,10 +520,6 @@
                             <span class="pause-icon-span inline-flex items-center"><svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
                             <span id="pauseBtnText">Resume</span>
                         </button>
-                        <button id="restartPlayerBtn" class="btn-restart flex-1" title="Restart Player (R)">
-                            <span class="restart-icon-span inline-flex items-center"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></span>
-                            <span>Restart (R)</span>
-                        </button>
                     </div>
                 </div>
 
@@ -661,17 +552,12 @@
                             <div id="highestBidder" class="text-sm font-black text-white mt-0.5">None</div>
                         </div>
 
-                        <!-- Last Bid Strip -->
-                        <div id="lastBidStrip" class="last-bid-ticker">
-                            <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                            <span>Open for bids at ₹2 Cr</span>
-                        </div>
                     </div>
 
                     <p id="computerPass" class="computer-pass" role="status" hidden></p>
 
                     <!-- Bottom Status Bar -->
-                    <div id="auctionPausedBottomBar" class="status-pill-blue w-full justify-center" aria-live="polite">
+                    <div id="auctionPausedBottomBar" hidden aria-hidden="true">
                         <svg class="w-3 h-3 inline fill-current" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
                         <span>AUCTION PAUSED</span>
                     </div>
@@ -679,6 +565,7 @@
 
                 <!-- Column 3: Team Bidding Grid & Controls -->
                 <div class="bidding-col-ref">
+                    <h2 class="bidding-heading" id="biddingHeading">Place a bid</h2>
                     <div class="bid-size"><span>Bid step</span><div role="group" aria-label="Bid increments"><button type="button" data-step="1" aria-pressed="true">1×</button><button type="button" data-step="2" aria-pressed="false">2×</button><button type="button" data-step="5" aria-pressed="false">5×</button></div></div>
                     <div class="team-bid-grid-ref">
                         <!-- Team 1 Bid Button -->
@@ -738,9 +625,8 @@
                         </button>
                     </div>
 
-                    <div class="on-deck"><span class="eyebrow">On deck</span><span id="nextLotName">—</span></div>
                     <!-- Bottom Action Controls: Sell Player & Mark Unsold -->
-                    <div class="grid grid-cols-2 gap-2.5 mt-3">
+                    <div class="grid grid-cols-2 gap-2.5 settlement-controls">
                         <button id="manualSellBtn" class="btn-sell-player" disabled>Sell Player (S)</button>
                         <button id="unsoldBtn" class="btn-mark-unsold">Mark Unsold</button>
                         <button id="nextPlayerBtn" class="hidden btn-resume col-span-2 py-2.5 text-sm font-extrabold">Next Player (N) →</button>
@@ -749,10 +635,6 @@
 
                 <div id="messageBox" class="absolute bottom-1.5 left-0 right-0 text-center text-xs font-bold pointer-events-none"></div>
             </div>
-            <details id="bidHistory" class="bid-journal">
-                <summary><span>Bid history</span><span id="bidHistoryCount">0 bids</span></summary>
-                <ol id="bidHistoryList" aria-label="Bids for the current player"></ol>
-            </details>
         </div>
         <!-- END SCREEN -->
         <div id="endScreen" class="hidden text-center glass-effect p-4 md:p-6 rounded-2xl shadow-lg flex-1 overflow-y-auto">
@@ -780,6 +662,7 @@
             <!-- Modal Header with Tab Navigation -->
             <div class="centre-tabs-header flex justify-between items-center p-3 md:p-4 border-b border-gray-700 bg-gray-800/90 shrink-0">
                 <div class="flex items-center gap-1 md:gap-2 flex-wrap">
+                    <button id="centreTabOverview" class="centre-tab">Overview</button>
                     <button id="centreTabTeams" class="centre-tab px-3 py-1.5 rounded-lg text-xs md:text-sm font-bold bg-fuchsia-600 text-white transition flex items-center gap-1.5">
                         <svg class="w-3.5 h-3.5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg> Teams Dashboard
                     </button>
@@ -798,6 +681,103 @@
                 </div>
                 <button id="closeAuctionCentreBtn" class="text-gray-400 hover:text-white text-2xl font-bold px-2 py-0.5 rounded leading-none transition" title="Close">&times;</button>
             </div>
+
+            <section id="centreContentOverview" class="hidden flex-1 overflow-y-auto auction-overview">
+                <h2>Auction overview</h2>
+                <div id="stickyStatsBar" class="hidden stats-bar-ref">
+            <div style="display: flex; align-items: center; gap: 0.65rem; overflow: hidden; white-space: nowrap;">
+                <span>Record: <span id="recordAmount" style="font-weight: 700; color: #22c55e;">₹0L</span></span>
+                <span style="color: rgba(255,255,255,0.15);">|</span>
+                <span>Player: <span id="recordPlayer" style="font-weight: 700; color: #ffffff;">-</span></span>
+                <span style="color: rgba(255,255,255,0.15);">|</span>
+                <span>Team: <span id="recordTeam" style="font-weight: 700; color: #ffffff;">-</span></span>
+                <span style="color: rgba(255,255,255,0.15);">|</span>
+                <span>Sold: <span id="statSoldPlayers" style="font-weight: 700; color: #ffffff;">0</span>/<span id="statPoolSize"></span></span>
+                <span style="color: rgba(255,255,255,0.15);">|</span>
+                <span>Spent: <span id="statTotalSpent" style="font-weight: 700; color: #22c55e;">₹0L</span></span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; padding-left: 0.75rem; border-left: 1px solid rgba(255,255,255,0.08);">
+                <span id="statCurrentRound" style="color: #cbd5e1; font-weight: 600;">Player 1 of 10 · 238 left</span>
+            </div>
+        </div>
+                <h3>Franchise purses</h3>
+                <div class="purse-grid-ref">
+                <div id="purseTeam1Info" class="team-purse-card team1-card">
+                    <div style="display: flex; align-items: center; overflow: hidden;">
+                        <div class="team-badge-icon" style="color: #38bdf8;">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3z"/></svg>
+                        </div>
+                        <div style="overflow: hidden;">
+                            <p style="font-size: 0.82rem; font-weight: 800; color: #ffffff; text-transform: uppercase; margin: 0; line-height: 1.1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">United</p>
+                            <p style="font-size: 0.65rem; color: #94a3b8; margin: 0.15rem 0 0 0; line-height: 1;">Squad: <span class="font-bold text-gray-200">0</span>/25 · OS: <span class="font-bold text-gray-200">0</span>/8</p>
+                        </div>
+                    </div>
+                    <p style="font-size: 0.95rem; font-weight: 900; color: #ffffff; margin: 0; white-space: nowrap;">₹0L</p>
+                </div>
+
+                <div id="purseTeam2Info" class="team-purse-card team2-card">
+                    <div style="display: flex; align-items: center; overflow: hidden;">
+                        <div class="team-badge-icon" style="color: #ef4444;">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 3.31 1.61 6.24 4.09 8.04L6 22l4-2h4l4 2-.09-1.96C20.39 18.24 22 15.31 22 12c0-5.52-4.48-10-10-10zm0 4a3 3 0 110 6 3 3 0 010-6z"/></svg>
+                        </div>
+                        <div style="overflow: hidden;">
+                            <p style="font-size: 0.82rem; font-weight: 800; color: #ffffff; text-transform: uppercase; margin: 0; line-height: 1.1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Knights</p>
+                            <p style="font-size: 0.65rem; color: #94a3b8; margin: 0.15rem 0 0 0; line-height: 1;">Squad: <span class="font-bold text-gray-200">0</span>/25 · OS: <span class="font-bold text-gray-200">0</span>/8</p>
+                        </div>
+                    </div>
+                    <p style="font-size: 0.95rem; font-weight: 900; color: #ffffff; margin: 0; white-space: nowrap;">₹0L</p>
+                </div>
+
+                <div id="purseTeam3Info" class="team-purse-card team3-card">
+                    <div style="display: flex; align-items: center; overflow: hidden;">
+                        <div class="team-badge-icon" style="color: #22c55e;">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .55-.45 1-1 1H6c-.55 0-1-.45-1-1v-1h14v1z"/></svg>
+                        </div>
+                        <div style="overflow: hidden;">
+                            <p style="font-size: 0.82rem; font-weight: 800; color: #ffffff; text-transform: uppercase; margin: 0; line-height: 1.1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Invincibles</p>
+                            <p style="font-size: 0.65rem; color: #94a3b8; margin: 0.15rem 0 0 0; line-height: 1;">Squad: <span class="font-bold text-gray-200">0</span>/25 · OS: <span class="font-bold text-gray-200">0</span>/8</p>
+                        </div>
+                    </div>
+                    <p style="font-size: 0.95rem; font-weight: 900; color: #ffffff; margin: 0; white-space: nowrap;">₹0L</p>
+                </div>
+
+                <div id="purseTeam4Info" class="team-purse-card team4-card">
+                    <div style="display: flex; align-items: center; overflow: hidden;">
+                        <div class="team-badge-icon" style="color: #c084fc;">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        </div>
+                        <div style="overflow: hidden;">
+                            <p style="font-size: 0.82rem; font-weight: 800; color: #ffffff; text-transform: uppercase; margin: 0; line-height: 1.1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Thunders</p>
+                            <p style="font-size: 0.65rem; color: #94a3b8; margin: 0.15rem 0 0 0; line-height: 1;">Squad: <span class="font-bold text-gray-200">0</span>/25 · OS: <span class="font-bold text-gray-200">0</span>/8</p>
+                        </div>
+                    </div>
+                    <p style="font-size: 0.95rem; font-weight: 900; color: #ffffff; margin: 0; white-space: nowrap;">₹0L</p>
+                </div>
+            </div>
+                <div class="overview-lot">
+<div class="on-deck"><span class="eyebrow">On deck</span><span id="nextLotName">—</span></div>
+                    <!-- Last Bid Strip -->
+                        <div id="lastBidStrip" class="last-bid-ticker">
+                            <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                            <span>Open for bids at ₹2 Cr</span>
+                        </div>
+                    <details id="bidHistory" open class="bid-journal">
+                <summary><span>Bid history</span><span id="bidHistoryCount">0 bids</span></summary>
+                <ol id="bidHistoryList" aria-label="Bids for the current player"></ol>
+            </details>
+                </div>
+                <div class="overview-actions">
+                    <button id="undoBtn" class="centre-pill-btn" disabled>
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a5 5 0 015 5v2m-15-7l4-4m-4 4l4 4"/></svg>
+                        <span>Undo</span>
+                    </button>
+                    <button id="restartPlayerBtn" class="btn-restart flex-1" title="Restart Player (R)">
+                            <span class="restart-icon-span inline-flex items-center"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></span>
+                            <span>Restart (R)</span>
+                        </button>
+                    <button id="floorFinish" class="secondary-action">Finish auction</button>
+                </div>
+            </section>
 
             <!-- TAB 1: TEAMS DASHBOARD -->
             <div id="centreContentTeams" class="flex-1 overflow-y-auto p-4 flex flex-col space-y-4">
@@ -2390,7 +2370,9 @@ function updateProgressIndicator() {
     if (appState.isUnsoldRound) {
         const count = appState.currentUnsoldRoundPlayers.length;
         document.getElementById('headerProgressText').textContent = 'Unsold round';
-        document.getElementById('statCurrentRound').textContent = 'Re-auction · Player ' + (appState.currentPlayerIndex + 1) + ' of ' + count;
+        const progress = 'Re-auction · Player ' + (appState.currentPlayerIndex + 1) + ' of ' + count;
+        document.getElementById('statCurrentRound').textContent = progress;
+        document.getElementById('floorProgress').textContent = progress;
         return;
     }
     const totalRemaining = Object.values(appState.playerPools).flat().filter(p => p.status === 'unsold').length;
@@ -2413,7 +2395,9 @@ function updateProgressIndicator() {
     const roundEl = document.getElementById('statCurrentRound');
     if (roundEl) {
         const playerNum = Math.max(1, appState.currentPlayerIndex + 1);
-        roundEl.innerText = `Player ${Math.min(playerNum, poolTotal || 1)} of ${poolTotal || 1} · ${totalRemaining} left`;
+        const progress = `Player ${Math.min(playerNum, poolTotal || 1)} of ${poolTotal || 1} · ${totalRemaining} left`;
+        roundEl.textContent = progress;
+        document.getElementById('floorProgress').textContent = progress;
     }
 }
 
@@ -2859,6 +2843,9 @@ function updateAuctioneerStatus(status) {
 // UPDATE CONTROLS (Live Bidding Buttons with Next Price, Stats, Ineligible reasons)
 function updateControls(isNewPlayer) {
     syncFloorTeams();
+    const solo = appState.humanTeam != null && !window.multiplayer?.active;
+    auctionScreen.classList.toggle('solo-floor', solo);
+    document.getElementById('biddingHeading').textContent = solo ? 'Your bid' : 'Place a bid';
     const player = getCurrentPlayer();
     const nextBidAmount = nextOfferAmount();
     const isOverseas = player && player.country && player.country.trim().toLowerCase() !== 'india';
@@ -2867,6 +2854,7 @@ function updateControls(isNewPlayer) {
 
     bidButtons.forEach((btn, tid) => {
         const team = appState.teams[tid];
+        btn.classList.toggle('computer-team-card', isComputerTeam(tid));
         const nameEl = btn.querySelector('.team-btn-name');
         const bidEl = btn.querySelector('.team-btn-bid');
         const subEl = btn.querySelector('.team-btn-sub');
@@ -3342,6 +3330,7 @@ function openAuctionCentre(tabName = 'teams') {
 
     // Update Tab Header Styling
     const tabBtns = {
+        overview: document.getElementById('centreTabOverview'),
         teams: document.getElementById('centreTabTeams'),
         remaining: document.getElementById('centreTabRemaining'),
         pools: document.getElementById('centreTabPools'),
@@ -3350,6 +3339,7 @@ function openAuctionCentre(tabName = 'teams') {
     };
 
     const tabContents = {
+        overview: document.getElementById('centreContentOverview'),
         teams: document.getElementById('centreContentTeams'),
         remaining: document.getElementById('centreContentRemaining'),
         pools: document.getElementById('centreContentPools'),
@@ -3358,6 +3348,7 @@ function openAuctionCentre(tabName = 'teams') {
     };
 
     Object.keys(tabBtns).forEach(key => {
+        tabBtns[key].setAttribute('aria-pressed', String(key === tabName));
         if (key === tabName) {
             tabBtns[key].className = "centre-tab px-3 py-1.5 rounded-lg text-xs md:text-sm font-bold bg-fuchsia-600 text-white shadow";
             tabContents[key].classList.remove('hidden');
@@ -3379,6 +3370,7 @@ function closeAuctionCentre() {
 }
 
 // Connect centre tab click handlers
+document.getElementById('centreTabOverview').addEventListener('click', () => openAuctionCentre('overview'));
 document.getElementById('centreTabTeams').addEventListener('click', () => openAuctionCentre('teams'));
 document.getElementById('centreTabRemaining').addEventListener('click', () => openAuctionCentre('remaining'));
 document.getElementById('centreTabPools').addEventListener('click', () => openAuctionCentre('pools'));
@@ -3386,10 +3378,6 @@ document.getElementById('centreTabUnsold').addEventListener('click', () => openA
 document.getElementById('centreTabLog').addEventListener('click', () => openAuctionCentre('log'));
 document.getElementById('closeAuctionCentreBtn').addEventListener('click', closeAuctionCentre);
 
-document.getElementById('showTeamsBtn').addEventListener('click', () => openAuctionCentre('teams'));
-document.getElementById('showRemainingBtn').addEventListener('click', () => openAuctionCentre('remaining'));
-document.getElementById('showUnsoldBtn').addEventListener('click', () => openAuctionCentre('unsold'));
-document.getElementById('showLogBtn').addEventListener('click', () => openAuctionCentre('log'));
 
 // --- TEAMS DASHBOARD RENDERING ---
 function renderTeamsDashboard() {
@@ -4528,8 +4516,24 @@ function refreshSetupSummary() {
 }
 
 document.getElementById('resultsCsv').addEventListener('click', exportAuctionCsv);
-document.getElementById('floorFinish').addEventListener('click', () => showAppConfirm('Finish auction?', 'Close bidding and view the final squads and spending totals.', endAuction));
-document.getElementById('showPoolsBtn').addEventListener('click', () => openAuctionCentre('pools'));
+document.getElementById('showAuctionDetailsBtn').addEventListener('click', () => openAuctionCentre('overview'));
+document.getElementById('floorFinish').addEventListener('click', () => {
+    closeAuctionCentre();
+    showAppConfirm('Finish auction?', 'Close bidding and view the final squads and spending totals.', endAuction);
+});
+const fullscreenButton = document.getElementById('floorFullscreen');
+fullscreenButton.hidden = !document.fullscreenEnabled;
+fullscreenButton.addEventListener('click', async () => {
+    try {
+        if (document.fullscreenElement) await document.exitFullscreen();
+        else await document.documentElement.requestFullscreen();
+    } catch {
+        showToast('Full screen is unavailable in this browser.', 'warning');
+    }
+});
+document.addEventListener('fullscreenchange', () => {
+    fullscreenButton.textContent = document.fullscreenElement ? 'Exit full screen' : 'Full screen';
+});
 document.getElementById('setupRules').addEventListener('click', () => {
     document.getElementById('settingsBtn').click();
     settingsPanel.querySelector('[data-target="setTabRules"]').click();
