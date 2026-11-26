@@ -279,17 +279,6 @@
         #bidHistoryList { max-height:12rem; overflow:auto; font-size:13px }
         #bidHistoryList li { padding:9px 16px; display:flex; align-items:center; gap:12px; border-top:1px solid var(--line) }
         #bidHistoryList strong { margin-left:auto } #bidHistoryList time { color:var(--muted); font:11px monospace }
-        #settingsModal > .glass-effect { width:min(790px,100%); max-width:none; padding:0; border-radius:18px; color:#eaf0e6 }
-        .settings-heading { margin:0; padding:19px 24px 15px; background:linear-gradient(110deg,var(--green),var(--night)); border-color:#ffffff21 }
-        .settings-heading .eyebrow,.club-letter .eyebrow { color:var(--accent) }
-        #settingsModal .settings-heading h2 { font:400 30px/1.2 var(--display); margin-top:4px }
-        .settings-heading h2 svg { display:none }
-        .settings-layout { display:grid; grid-template-columns:164px minmax(0,1fr); min-height:0; height:min(425px,56dvh) }
-        #settingsModal .settings-nav { display:flex; flex-direction:column; gap:4px; align-items:stretch; flex-wrap:nowrap; padding:17px 10px; border-right:1px solid #ffffff25; background:#00000017; overflow:auto }
-        #settingsModal .settings-tab-btn { text-align:left; padding:9px 12px; color:#c2cfc3; font-size:13px; font-weight:600 }
-        #settingsModal .settings-tab-btn.active { color:#15271d; background:var(--accent) }
-        .settings-content { overflow:auto; min-height:0; padding:18px 24px 20px; scrollbar-color:#52675a transparent; scrollbar-width:thin }
-        #settingsModal .settings-content h3 { font:400 25px/1.15 var(--display); letter-spacing:-.035em; margin:0 0 15px }
         @media(max-width:370px) {
             .mast-inner { gap:4px } .brand-title { font-size:19px; gap:4px } .brand-mark { width:22px; height:22px }
             .mast-actions button { min-width:26px; padding:4px }
@@ -304,8 +293,6 @@
         .mode-option input:checked + span,.preset-grid button[aria-pressed="true"] { border-color:var(--accent); color:var(--accent); background:color-mix(in srgb,var(--accent) 9%,var(--night)) }
         .mode-option input:focus-visible + span { outline:2px solid #edbc78; outline-offset:2px }
         .preset-grid button small { font-size:11px; font-weight:400; color:#c5d2c7 }
-        .settings-bottom { padding:12px 24px; margin:0; border-color:#ffffff24 }
-        #cancelSettingsBtn { padding:6px 14px; font-size:13px; color:#c5d0c6 }
         .club-letter > p:not(.eyebrow,.signature) { font:400 16px/1.6 var(--display); color:#e2e9dc; margin-bottom:10px; max-width:48ch }
         #settingsModal .club-letter h3 { margin:6px 0 16px }
         .signature { font:italic 23px/1.3 var(--display); color:var(--accent); margin-top:16px }
@@ -334,10 +321,6 @@
             }
         }
         @media(max-width:650px) {
-            #settingsModal .settings-layout { display:flex; flex-direction:column; height:min(500px,65dvh) }
-            #settingsModal .settings-nav { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); flex:none; padding:6px 8px; gap:3px; border:0; border-bottom:1px solid #ffffff25 }
-            #settingsModal .settings-tab-btn { white-space:normal; text-align:center; padding:4px; font-size:11px }
-            .settings-content { flex:1; padding:15px } .settings-heading,.settings-bottom { padding:12px 15px }
             .preset-grid button,.mode-option span { padding:8px; font-size:12px } .preset-grid button small { font-size:10px }
             .mast-actions button { min-width:29px } .mast-actions { gap:2px } .club-credit { width:94% }
         }
@@ -1010,32 +993,28 @@
         </div>
     </div>
 
-    <!-- SETTINGS MODAL (Organized Tabbed Layout) -->
-    <div id="settingsModal" class="hidden fixed inset-0 z-40 modal-backdrop flex items-center justify-center p-3 md:p-4">
-        <div class="glass-effect bg-gray-900 w-full max-w-2xl max-h-[92vh] flex flex-col p-4 md:p-6 rounded-2xl shadow-2xl border border-gray-600 overflow-hidden">
-            <div class="settings-heading flex justify-between items-center mb-4 border-b border-gray-700 pb-3">
-                <div><p class="eyebrow">Boundary Club</p><h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
-                    <svg class="w-5 h-5 text-fuchsia-400 inline mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg> Club settings
-                </h2></div>
-                <button id="closeSettingsBtn" aria-label="Discard settings changes and close" class="text-gray-400 hover:text-white text-2xl leading-none">&times;</button>
-            </div>
-
+    <!-- SETTINGS MODAL -->
+    <div id="settingsModal" class="hidden fixed inset-0 z-40 modal-backdrop auction-dialog">
+        <div class="glass-effect settings-panel">
+            <header class="settings-heading">
+                <div class="settings-title"><span class="settings-title-icon" data-icon="sliders" aria-hidden="true"></span><h2>Club settings</h2></div>
+                <button id="closeSettingsBtn" type="button" class="settings-close" aria-label="Discard settings changes and close"><span data-icon="close" aria-hidden="true"></span></button>
+            </header>
             <div class="settings-layout">
-            <!-- Settings Tabs -->
-            <nav class="settings-nav" aria-label="Settings sections">
-                <button class="settings-tab-btn active px-3 py-1 rounded text-xs font-bold bg-fuchsia-600 text-white" data-target="setTabRules">Auction Rules</button>
-                <button class="settings-tab-btn px-3 py-1 rounded text-xs font-bold text-gray-400 hover:text-white" data-target="setTabSquad">Squad Rules</button>
-                <button class="settings-tab-btn px-3 py-1 rounded text-xs font-bold text-gray-400 hover:text-white" data-target="setTabBidding">Bidding & Bands</button>
-                <button class="settings-tab-btn px-3 py-1 rounded text-xs font-bold text-gray-400 hover:text-white" data-target="setTabAppearance">Appearance</button>
-                <button class="settings-tab-btn px-3 py-1 rounded text-xs font-bold text-gray-400 hover:text-white" data-target="setTabData">Data & Defaults</button>
-                <button class="settings-tab-btn" data-target="setTabClub">From the developer</button>
-            </nav>
+                <nav class="settings-nav" aria-label="Settings sections">
+                    <button type="button" class="settings-tab-btn active" data-target="setTabRules"><span data-icon="gavel" aria-hidden="true"></span>Auction rules</button>
+                    <button type="button" class="settings-tab-btn" data-target="setTabSquad"><span data-icon="players" aria-hidden="true"></span>Squad limits</button>
+                    <button type="button" class="settings-tab-btn" data-target="setTabBidding"><span data-icon="clock" aria-hidden="true"></span>Bid increments</button>
+                    <button type="button" class="settings-tab-btn" data-target="setTabAppearance"><span data-icon="sliders" aria-hidden="true"></span>Appearance</button>
+                    <button type="button" class="settings-tab-btn" data-target="setTabData"><span data-icon="report" aria-hidden="true"></span>Reports &amp; data</button>
+                    <button type="button" class="settings-tab-btn" data-target="setTabClub"><span data-icon="shield" aria-hidden="true"></span>About the club</button>
+                </nav>
 
             <!-- Tab Content Area -->
             <div class="settings-content">
                 <!-- Tab: Auction Rules -->
                 <div id="setTabRules" class="settings-tab-content space-y-4">
-                    <h3>Auction rules</h3><label class="club-setting">Order within each pool<select id="settingLotOrder"><option value="listed">Database order</option><option value="shuffle">Random draw</option></select></label>
+                    <h3>Auction rules</h3>
                     <fieldset><legend class="field-title">Auction pace</legend>
                         <div class="preset-grid">
                             <button type="button" data-clock="20" data-bands="double"><strong>Blitz</strong><small>20 s · Double bids</small></button>
@@ -1043,34 +1022,31 @@
                             <button type="button" data-clock="75" data-bands="real"><strong>Test match</strong><small>75 s · Standard</small></button>
                         </div>
                     </fieldset>
+                    <div class="settings-input-grid">
+                    <label class="club-setting">Order within each pool<select id="settingLotOrder"><option value="listed">Database order</option><option value="shuffle">Random draw</option></select></label>
                     <div>
                         <label for="settingPurse" class="block text-gray-300 text-xs font-semibold mb-1">Starting Purse per Team (Lakhs)</label>
                         <input type="number" id="settingPurse" min="1" required class="w-full bg-gray-800 text-white p-2 rounded border border-gray-600 text-sm" value="10000">
-                        <p class="text-[11px] text-gray-400 mt-0.5">Default 10,000 Lakhs = ₹100 Crore.</p>
+                        <p class="text-[11px] text-gray-400 mt-0.5">Default 10,000 lakhs (₹100 crore).</p>
+                    </div>
                     </div>
                     <div>
                         <label for="settingTimer" class="block text-gray-300 text-xs font-semibold mb-1">Timer Countdown: <span id="timerValueDisplay" class="text-fuchsia-300 font-bold">40</span>s</label>
                         <input type="range" id="settingTimer" min="10" max="120" step="5" value="40" class="w-full accent-fuchsia-500 cursor-pointer">
                     </div>
-                    <div class="flex items-center justify-between p-2 rounded bg-gray-800/60 border border-gray-700">
-                        <div>
-                            <p class="text-sm font-semibold text-white">Enable Retention Phase</p>
-                            <p class="text-[11px] text-gray-400">Reserve players before opening the bidding.</p>
-                        </div>
+                    <label class="settings-switch">
+                        <span><strong class="block text-sm text-white">Enable Retention Phase</strong><small class="block text-[11px] text-gray-400">Reserve players before opening the bidding.</small></span>
                         <input type="checkbox" aria-label="Enable retention phase" id="settingRetention" checked class="w-5 h-5 accent-fuchsia-500">
-                    </div>
-                    <div class="flex items-center justify-between p-2 rounded bg-gray-800/60 border border-gray-700">
-                        <div>
-                            <p class="text-sm font-semibold text-white">Enable Unsold Re-auction Round</p>
-                            <p class="text-[11px] text-gray-400">Re-auction unsold players for a final chance.</p>
-                        </div>
+                    </label>
+                    <label class="settings-switch">
+                        <span><strong class="block text-sm text-white">Enable Unsold Re-auction Round</strong><small class="block text-[11px] text-gray-400">Re-auction unsold players for a final chance.</small></span>
                         <input type="checkbox" aria-label="Enable unsold re-auction" id="settingUnsoldRound" checked class="w-5 h-5 accent-fuchsia-500">
-                    </div>
+                    </label>
                 </div>
 
                 <!-- Tab: Squad Rules -->
                 <div id="setTabSquad" class="settings-tab-content hidden space-y-4"><h3>Squad limits</h3><label class="club-setting">Retention slots per team<select id="settingSlots"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
-                    <div class="grid grid-cols-2 gap-3">
+                    <div class="settings-input-grid">
                         <div>
                             <label for="settingMaxSquad" class="block text-gray-300 text-xs font-semibold mb-1">Maximum Squad Size</label>
                             <input type="number" id="settingMaxSquad" min="15" max="30" value="25" class="w-full bg-gray-800 text-white p-2 rounded border border-gray-600 text-sm">
@@ -1138,20 +1114,14 @@
                             <option value="midnight">Midnight Indigo</option>
                         </select>
                     </div>
-                    <div class="flex items-center justify-between p-2 rounded bg-gray-800/60 border border-gray-700">
-                        <div>
-                            <p class="text-sm font-semibold text-white">Enable Audio & Sound FX</p>
-                            <p class="text-[11px] text-gray-400">Bidding gavel, crowd cheers, timer tension sound.</p>
-                        </div>
+                    <label class="settings-switch">
+                        <span><strong class="block text-sm text-white">Enable Audio & Sound FX</strong><small class="block text-[11px] text-gray-400">Bidding gavel, crowd cheers, timer tension sound.</small></span>
                         <input type="checkbox" aria-label="Enable auction sounds" id="settingAudio" checked class="w-5 h-5 accent-fuchsia-500">
-                    </div>
-                    <div class="flex items-center justify-between p-2 rounded bg-gray-800/60 border border-gray-700">
-                        <div>
-                            <p class="text-sm font-semibold text-white">Reduced Motion Mode</p>
-                            <p class="text-[11px] text-gray-400">Minimize animations and background movement.</p>
-                        </div>
+                    </label>
+                    <label class="settings-switch">
+                        <span><strong class="block text-sm text-white">Reduced Motion Mode</strong><small class="block text-[11px] text-gray-400">Minimize animations and background movement.</small></span>
                         <input type="checkbox" aria-label="Reduce motion" id="settingReducedMotion" class="w-5 h-5 accent-fuchsia-500">
-                    </div>
+                    </label>
                 </div>
 
                 <!-- Tab: Data & Defaults -->
@@ -1186,10 +1156,10 @@
             </div>
             </div>
 
-            <div class="settings-bottom mt-4 pt-3 border-t border-gray-700 flex justify-end gap-2 shrink-0">
-                <button id="cancelSettingsBtn">Cancel</button>
-                <button id="saveSettingsBtn" class="bg-fuchsia-600 hover:bg-fuchsia-500 text-white px-5 py-2 rounded-lg text-xs font-bold shadow">Save settings</button>
-            </div>
+            <footer class="settings-bottom">
+                <button id="cancelSettingsBtn" type="button" class="settings-secondary">Cancel</button>
+                <button id="saveSettingsBtn" type="button" class="settings-save"><span data-icon="check" aria-hidden="true"></span>Save settings</button>
+            </footer>
         </div>
     </div>
 
@@ -4066,20 +4036,16 @@ document.getElementById('saveSettingsBtn').addEventListener('click', () => {
     saveState();
 });
 
-// Settings Tabs
-document.querySelectorAll('.settings-tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.settings-tab-btn').forEach(b => {
-            b.classList.remove('active', 'bg-fuchsia-600', 'text-white');
-            b.classList.add('text-gray-400');
+// Settings tabs
+const settingsTabs = [...settingsPanel.querySelectorAll('.settings-tab-btn')];
+const settingsSections = [...settingsPanel.querySelectorAll('.settings-tab-content')];
+settingsTabs.forEach(button => {
+    button.addEventListener('click', () => {
+        settingsTabs.forEach(tab => {
+            tab.classList.toggle('active', tab === button);
+            tab.setAttribute('aria-pressed', String(tab === button));
         });
-        settingsPanel.querySelectorAll('.settings-tab-btn').forEach(tab => tab.setAttribute('aria-pressed', tab === btn));
-        btn.classList.add('active', 'bg-fuchsia-600', 'text-white');
-        btn.classList.remove('text-gray-400');
-
-        const target = btn.dataset.target;
-        document.querySelectorAll('.settings-tab-content').forEach(c => c.classList.add('hidden'));
-        document.getElementById(target).classList.remove('hidden');
+        settingsSections.forEach(section => section.classList.toggle('hidden', section.id !== button.dataset.target));
         settingsPanel.querySelector('.settings-content').scrollTop = 0;
     });
 });
