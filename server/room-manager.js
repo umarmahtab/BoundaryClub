@@ -138,7 +138,7 @@ class RoomManager {
         }
 
         const index = Number(teamIdx);
-        if (index < 0 || index >= room.engine.teams.length) {
+        if (!Number.isInteger(index) || index < 0 || index >= room.engine.teams.length) {
             return { success: false, error: 'Invalid franchise' };
         }
 

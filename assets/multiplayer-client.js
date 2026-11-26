@@ -21,18 +21,17 @@ class MultiplayerClient {
     init() {
         this.setupUI();
 
+        if (this.socket) return;
+
         if (typeof io === 'undefined') {
             console.log('Socket.IO not available yet. Running in local solo mode.');
             return;
         }
 
         try {
-            // If running via file: protocol or alternate dev port, point to localhost:3000
-            const isFile = window.location.protocol === 'file:';
-            const isAlternatePort = window.location.port !== '3000' && window.location.port !== '';
-            const serverUrl = (isFile || isAlternatePort) ? 'http://localhost:3000' : undefined;
-
-            this.socket = serverUrl ? io(serverUrl, { timeout: 5000 }) : io({ timeout: 5000 });
+            const configuredOrigin = document.querySelector('meta[name="multiplayer-server"]')?.content;
+            const serverUrl = configuredOrigin || (window.location.protocol === 'file:' ? 'http://localhost:3000' : undefined);
+            this.socket = io(serverUrl, { timeout: 5000 });
             this.setupSocketListeners();
             this.updateBadge();
         } catch (err) {
@@ -95,8 +94,7 @@ class MultiplayerClient {
             this.updateBadge();
 
             if (data.auctionState && data.auctionState.auctionStarted) {
-                this.handleAuctionState(data.auctionState);
-                this.closeModal();
+                this.handleAuctionStarted(data.auctionState);
             }
 
             if (typeof showToast === 'function') {
@@ -222,18 +220,18 @@ class MultiplayerClient {
             createBtn.addEventListener('click', () => {
                 if (!this.socket || !this.socket.connected) {
                     if (typeof showToast === 'function') {
-                        showToast('Connecting to server at http://localhost:3000. Ensure "npm start" is running.', 'warning');
+                        showToast('Multiplayer is connecting. Try again in a moment.', 'warning');
                     }
                     this.init();
                     return;
                 }
+                if (!syncFranchiseSetup()) return;
                 const name = nameInput ? nameInput.value.trim() : this.playerName;
-                const currentTeams = typeof appState !== 'undefined' ? appState.teams : null;
-                const currentSettings = typeof appState !== 'undefined' ? appState.settings : null;
                 this.socket.emit('room:create', {
                     hostName: name || 'Host',
-                    settings: currentSettings,
-                    teams: currentTeams
+                    settings: appState.settings,
+                    teams: appState.teams,
+                    playerList: appState.masterPlayerList
                 });
             });
         }
@@ -242,7 +240,7 @@ class MultiplayerClient {
             joinBtn.addEventListener('click', () => {
                 if (!this.socket || !this.socket.connected) {
                     if (typeof showToast === 'function') {
-                        showToast('Connecting to server at http://localhost:3000. Ensure "npm start" is running.', 'warning');
+                        showToast('Multiplayer is connecting. Try again in a moment.', 'warning');
                     }
                     this.init();
                     return;
@@ -266,7 +264,7 @@ class MultiplayerClient {
 
         if (startBtn) {
             startBtn.addEventListener('click', () => {
-                if (!this.isHost) return;
+                if (!this.isHost || !syncFranchiseSetup()) return;
                 const currentTeams = typeof appState !== 'undefined' ? appState.teams : null;
                 const currentSettings = typeof appState !== 'undefined' ? appState.settings : null;
                 this.socket.emit('auction:start', { teams: currentTeams, settings: currentSettings });
@@ -389,8 +387,8 @@ class MultiplayerClient {
 
         // Franchise selection grid
         const franchiseGrid = document.getElementById('mpFranchiseSelectGrid');
-        if (franchiseGrid && typeof appState !== 'undefined' && appState.teams) {
-            franchiseGrid.innerHTML = appState.teams.map((team, idx) => {
+        if (franchiseGrid && this.roomState?.teams) {
+            franchiseGrid.innerHTML = this.roomState.teams.map((team, idx) => {
                 const owner = this.roomState && this.roomState.participants
                     ? this.roomState.participants.find(p => p.teamIdx === idx)
                     : null;
@@ -599,6 +597,8 @@ class MultiplayerClient {
 
     // --- Incoming Event Handlers ---
     handleAuctionStarted(state) {
+        clearInterval(appState.timerId);
+        appState.timerId = null;
         this.closeModal();
         if (typeof setupScreen !== 'undefined' && setupScreen) setupScreen.classList.add('hidden');
         if (typeof auctionScreen !== 'undefined' && auctionScreen) auctionScreen.classList.remove('hidden');
@@ -609,6 +609,13 @@ class MultiplayerClient {
 
     handleAuctionState(state) {
         if (!state || typeof appState === 'undefined') return;
+
+        this.currentPlayer = state.currentPlayer;
+        appState.humanTeam = null;
+        if (state.settings) {
+            const { enableAudio, theme, reducedMotion } = appState.settings;
+            Object.assign(appState.settings, state.settings, { enableAudio, theme, reducedMotion });
+        }
 
         // Synchronize appState authoritatively
         appState.auctionStarted = state.auctionStarted;
@@ -627,12 +634,7 @@ class MultiplayerClient {
         appState.isUnsoldRound = state.isUnsoldRound;
 
         if (Array.isArray(state.teams)) {
-            state.teams.forEach((st, i) => {
-                if (appState.teams[i]) {
-                    appState.teams[i].purse = st.purse;
-                    appState.teams[i].squad = st.squad;
-                }
-            });
+            appState.teams = state.teams;
         }
 
         // Synchronize pool order if provided

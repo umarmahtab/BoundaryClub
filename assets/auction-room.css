@@ -181,3 +181,8 @@ body.theme-fuchsia {--green:#104f3c;--accent:#f3ca70}
     .team-tools button {font-size:11px}
 }
 @media(max-width:370px){.mast-inner,#app,.club-credit{width:calc(100% - 20px)}.workspace-nav button{gap:5px;padding-inline:7px}.franchise-name{font-size:17px}.team-tools button{gap:3px}}
+
+.franchise-options { display:flex; flex-wrap:wrap; gap:12px 20px; margin-bottom:14px; }
+.franchise-options label { display:flex; align-items:center; gap:8px; color:var(--muted); font-size:.9rem; }
+.franchise-options select { background:var(--card); color:var(--ink); border:1px solid var(--line); border-radius:8px; padding:7px 10px; }
+.franchise-options [hidden], .franchise-card[hidden], .team-purse-card[hidden], .bid-team-card-btn[hidden] { display:none !important; }

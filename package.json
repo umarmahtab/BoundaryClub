@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
+    "build": "node scripts/build-web.js",
     "test": "node test/e2e_dom_simulation.js && node test/multiplayer.test.js"
   },
   "dependencies": {

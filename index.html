@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta name="multiplayer-server" content="">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
@@ -466,8 +467,15 @@
                 </div>
                 <div class="stadium-art" aria-hidden="true"><img src="assets/club-stadium.svg" alt=""></div>
             </div>
-            <dl class="overview-grid"><div class="metric"><span class="metric-icon"><span data-icon="shield" aria-hidden="true"></span></span><div><dt>Franchises</dt><dd>4</dd></div></div><div class="metric"><span class="metric-icon"><span data-icon="players" aria-hidden="true"></span></span><div><dt>Player pool</dt><dd id="setupPlayerCount">—</dd></div></div><div class="metric"><span class="metric-icon"><span data-icon="wallet" aria-hidden="true"></span></span><div><dt>Starting purse</dt><dd id="setupPurse">—</dd></div></div><div class="metric"><span class="metric-icon"><span data-icon="clock" aria-hidden="true"></span></span><div><dt>Bid clock</dt><dd id="setupClock">—</dd></div></div></dl>
+            <dl class="overview-grid"><div class="metric"><span class="metric-icon"><span data-icon="shield" aria-hidden="true"></span></span><div><dt>Franchises</dt><dd id="setupTeamCount">4</dd></div></div><div class="metric"><span class="metric-icon"><span data-icon="players" aria-hidden="true"></span></span><div><dt>Player pool</dt><dd id="setupPlayerCount">—</dd></div></div><div class="metric"><span class="metric-icon"><span data-icon="wallet" aria-hidden="true"></span></span><div><dt>Starting purse</dt><dd id="setupPurse">—</dd></div></div><div class="metric"><span class="metric-icon"><span data-icon="clock" aria-hidden="true"></span></span><div><dt>Bid clock</dt><dd id="setupClock">—</dd></div></div></dl>
             <div class="section-head lineup-head"><div><p class="eyebrow"><span class="rule"></span>Franchise management</p><h2>Franchise lineup</h2></div><button id="managePoolBtn" class="secondary-action"><span data-icon="players" aria-hidden="true"></span>Manage players</button></div>
+            <div class="franchise-options">
+                <label>Franchises <select id="franchiseCount" aria-label="Number of franchises">
+                    <option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option><option>7</option><option>8</option>
+                </select></label>
+                <label>Play style <select id="auctionPlayStyle"><option value="solo">Solo vs computer</option><option value="manual" selected>Control all teams</option></select></label>
+                <label id="soloTeamField" hidden>Your franchise <select id="soloTeam"></select></label>
+            </div>
             <div class="franchise-grid"><article class="franchise-card" style="--team:#226f92">
                 <div class="franchise-banner"><span class="franchise-index">Franchise 01</span><button class="crest crest-main" data-edit-team="0" aria-label="Change United logo"></button><span class="crest-echo" aria-hidden="true"></span></div>
                 <div class="franchise-body"><label class="name-field"><span class="sr-only">Franchise 1 name</span><input id="team1Name" class="franchise-name" value="United" maxlength="20" autocomplete="off" spellcheck="false"><span data-icon="pencil" aria-hidden="true"></span></label>
@@ -1807,7 +1815,8 @@ const timerDisplay = document.getElementById('timer');
 const timerRing = document.getElementById('timerRing');
 const ringCircumference = 2 * Math.PI * Number(timerRing.getAttribute('r'));
 
-const bidButtons = document.querySelectorAll('.bid-team-card-btn');
+const bidButtons = [...document.querySelectorAll('.bid-team-card-btn')];
+const purseCards = [...document.querySelectorAll('.team-purse-card')];
 const manualSellBtn = document.getElementById('manualSellBtn');
 const unsoldBtn = document.getElementById('unsoldBtn');
 const nextPlayerBtn = document.getElementById('nextPlayerBtn');
@@ -2219,7 +2228,7 @@ function undoLastAction() {
 
 // --- PERSISTENCE ---
 function saveState() {
-    if (!appState.auctionStarted || appState.auctionEnded) return;
+    if (!appState.auctionStarted || appState.auctionEnded || window.multiplayer?.active) return;
     try {
         const { actionHistory, ...stateWithoutHistory } = appState;
         const stateToSave = { ...stateWithoutHistory, unsoldSelectedIds: [...appState.unsoldSelectedIds], timerId: null };
@@ -2403,23 +2412,10 @@ function updateProgressIndicator() {
 
 // START AUCTION
 function startAuction() {
-    const t1 = document.getElementById('team1Name').value.trim() || "United";
-    const t2 = document.getElementById('team2Name').value.trim() || "Knights";
-    const t3 = document.getElementById('team3Name').value.trim() || "Invincibles";
-    const t4 = document.getElementById('team4Name').value.trim() || "Thunders";
-
-    if (new Set([t1,t2,t3,t4].map(name => name.toLowerCase())).size !== 4) {
-        showToast('Give each franchise a different name.', 'warning');
-        return;
-    }
-    appState.teams[0].name = t1;
-    appState.teams[1].name = t2;
-    appState.teams[2].name = t3;
-    appState.teams[3].name = t4;
-    appState.teams.forEach((team, index) => {
-        const colorInput = document.getElementById(`team${index + 1}Color`);
-        if (colorInput && /^#[0-9a-f]{6}$/i.test(colorInput.value)) team.color = colorInput.value;
-    });
+    if (window.multiplayer?.active) { window.multiplayer.openModal(); return; }
+    if (!syncFranchiseSetup()) return;
+    appState.humanTeam = document.getElementById('auctionPlayStyle').value === 'solo'
+        ? Number(document.getElementById('soloTeam').value) : null;
 
     const purse = appState.settings.initialPurse;
     appState.auctionStarted = true;
@@ -2447,7 +2443,7 @@ function startAuction() {
 // RETENTION PHASE
 function startRetentionPhase(resuming = false) {
     const selectedIds = resuming ? (appState.tempRetainedPlayers || []).map(player => player.id) : [];
-    if (!resuming) appState.currentRetentionTeamIndex = 0;
+    if (!resuming) appState.currentRetentionTeamIndex = appState.humanTeam ?? 0;
     appState.phase = 'retention';
     setupRetentionModal(appState.currentRetentionTeamIndex);
     if (resuming) {
@@ -2546,7 +2542,7 @@ document.getElementById('confirmRetentionsBtn').addEventListener('click', () => 
     });
 
     appState.currentRetentionTeamIndex++;
-    if (appState.currentRetentionTeamIndex < appState.teams.length) {
+    if (appState.humanTeam == null && appState.currentRetentionTeamIndex < appState.teams.length) {
         setupRetentionModal(appState.currentRetentionTeamIndex);
         saveState();
     } else {
@@ -2659,6 +2655,7 @@ function startUnsoldRound() {
 }
 
 function getCurrentPlayer() {
+    if (window.multiplayer?.active) return window.multiplayer.currentPlayer ?? null;
     if (!appState.playerPools) return null;
     if (appState.isUnsoldRound) {
         if (!appState.currentUnsoldRoundPlayers || appState.currentUnsoldRoundPlayers.length === 0) return null;
@@ -2854,6 +2851,7 @@ function updateAuctioneerStatus(status) {
 
 // UPDATE CONTROLS (Live Bidding Buttons with Next Price, Stats, Ineligible reasons)
 function updateControls(isNewPlayer) {
+    syncFloorTeams();
     const player = getCurrentPlayer();
     const nextBidAmount = nextOfferAmount();
     const isOverseas = player && player.country && player.country.trim().toLowerCase() !== 'india';
@@ -2867,7 +2865,7 @@ function updateControls(isNewPlayer) {
         const subEl = btn.querySelector('.team-btn-sub');
         const reasonEl = btn.querySelector('.team-btn-reason');
 
-        if (!team) { btn.hidden = true; return; }
+        if (!team) return;
         btn.classList.toggle('leading-team', appState.highestBidder === tid);
         btn.setAttribute('aria-label', team.name + ', bid ₹' + formatPrice(nextBidAmount));
         if (nameEl) nameEl.innerText = team.name;
@@ -2879,7 +2877,9 @@ function updateControls(isNewPlayer) {
         }
 
         let ineligibleReason = null;
-        if (appState.timerPaused) {
+        if (isComputerTeam(tid)) {
+            ineligibleReason = appState.highestBidder === tid ? 'Computer · Leading' : 'Computer bidder';
+        } else if (appState.timerPaused) {
             ineligibleReason = "Paused";
         } else if (appState.highestBidder === tid) {
             ineligibleReason = "Holding Bid";
@@ -2952,6 +2952,8 @@ function startTimer(seconds = appState.settings.timerDuration || 40) {
         pauseBtn.classList.add('bg-gray-800/70', 'hover:bg-gray-800');
     }
 
+    const computerBidAt = Date.now() + 2000 + Math.random() * 2000;
+    let computerConsidered = false;
     appState.timerId = setInterval(() => {
         if (appState.timerPaused || document.querySelector('.modal-backdrop:not(.hidden)')) return;
 
@@ -2992,6 +2994,11 @@ function startTimer(seconds = appState.settings.timerDuration || 40) {
             }
         }
 
+        if (!computerConsidered && appState.timeLeft > 0 && Date.now() >= computerBidAt) {
+            computerConsidered = true;
+            if (tryComputerBid()) return;
+        }
+
         if (appState.timeLeft <= 0) {
             clearInterval(appState.timerId);
             sounds.tension.pause();
@@ -3006,7 +3013,7 @@ function startTimer(seconds = appState.settings.timerDuration || 40) {
 }
 
 // BID FUNCTION
-function bid(teamIdx) {
+function bid(teamIdx, computer = false) {
     if (window.multiplayer && window.multiplayer.active) {
         window.multiplayer.placeBid(teamIdx, window.selectedBidStep || 1);
         return;
@@ -3016,7 +3023,7 @@ function bid(teamIdx) {
 
     const team = appState.teams[teamIdx];
     const maxSquad = appState.settings.maxSquadSize || 25;
-    if (!team) return;
+    if (!team || isComputerTeam(teamIdx) !== computer) return;
     if (team.squad.length >= maxSquad) {
         showToast(`Squad full (${maxSquad} players max)`, "error");
         return;
@@ -3028,7 +3035,7 @@ function bid(teamIdx) {
     }
     if (teamIdx === appState.highestBidder) return;
 
-    const newBid = nextOfferAmount();
+    const newBid = nextOfferAmount(computer ? 1 : undefined);
 
     if (team.purse < newBid) {
         showToast(`Not enough purse! Need ₹${formatPrice(newBid - team.purse)} more`, "error");
@@ -3073,12 +3080,13 @@ function bid(teamIdx) {
     saveState();
 }
 
-bidButtons.forEach(btn => btn.addEventListener('click', () => {
-    const teamIdx = parseInt(btn.dataset.team);
+bidButtons[0].parentElement.addEventListener('click', event => {
+    const btn = event.target.closest('.bid-team-card-btn');
+    if (!btn || btn.disabled) return;
     btn.classList.add('bid-clicked');
     setTimeout(() => btn.classList.remove('bid-clicked'), 250);
-    bid(teamIdx);
-}));
+    bid(Number(btn.dataset.team));
+});
 
 // SELL PLAYER
 function sellPlayer() {
@@ -3924,6 +3932,7 @@ function updateStickyStats() {
 }
 
 function updatePurseDashboard() {
+    syncFloorTeams();
     appState.teams.forEach((team, i) => {
         paintFloorCrest(team, i);
         const el = document.getElementById(`purseTeam${i+1}Info`);
@@ -4447,10 +4456,7 @@ document.addEventListener('keydown', (e) => {
     }
     if (key === 'M') { setAudioEnabled(appState.settings.enableAudio === false); return; }
     if (!['bidding','settled'].includes(appState.phase)) return;
-    if (key === '1') bid(0);
-    if (key === '2') bid(1);
-    if (key === '3') bid(2);
-    if (key === '4') bid(3);
+    if (/^[1-8]$/.test(key)) bid(Number(key) - 1);
     if (key === 'N' && !nextPlayerBtn.classList.contains('hidden')) nextPlayer();
     if (key === 'S' && !manualSellBtn.classList.contains('hidden') && !manualSellBtn.disabled) sellPlayer();
     if (key === 'R') restartCurrentPlayer();
@@ -4492,9 +4498,6 @@ document.getElementById('setupRules').addEventListener('click', () => {
     document.getElementById('settingsBtn').click();
     settingsPanel.querySelector('[data-target="setTabRules"]').click();
 });
-document.querySelectorAll('.swatch input').forEach(input => input.addEventListener('input', () => {
-    input.closest('.franchise-card').style.setProperty('--team', input.value);
-}));
 refreshSetupSummary();
 
 // ==================== INITIALIZATION ====================

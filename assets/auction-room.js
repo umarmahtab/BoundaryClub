@@ -41,7 +41,7 @@ function safeLogo(logo) {
 }
 function franchiseMark(team, idx) {
     if (safeLogo(team.logo)) return '<img class="club-crest" alt="" src="' + team.logo + '">';
-    const name = crestNames.includes(team.crest) ? team.crest : crestNames[idx % 4];
+    const name = crestNames.includes(team.crest) ? team.crest : crestNames[idx % crestNames.length];
     return '<svg class="club-crest" aria-hidden="true" viewBox="0 0 64 64" fill="none"><use href="#crest-' + name + '"/></svg>';
 }
 const franchiseCards = [...document.querySelectorAll('.franchise-card')];
@@ -64,25 +64,173 @@ function paintFloorCrest(team, index) {
 function saveClubIdentities() {
     storeRoomPreference('boundaryClubFranchises', appState.teams.map(({ name, color, crest, logo }) => ({ name, color, crest, logo })));
 }
+const franchiseCount = element('franchiseCount');
+const franchiseGrid = franchiseCards[0].parentElement;
+const setupTemplate = franchiseCards[0].cloneNode(true);
+const playStyle = element('auctionPlayStyle');
+const soloTeam = element('soloTeam');
 const savedClubs = readRoomPreference('boundaryClubFranchises', []);
-franchiseCards.forEach((card, index) => {
-    const team = appState.teams[index];
-    const saved = savedClubs?.[index] || {};
-    const name = element('team' + (index + 1) + 'Name');
-    const color = element('team' + (index + 1) + 'Color');
-    if (typeof saved.name === 'string' && saved.name.trim()) name.value = saved.name.slice(0,20);
-    if (/^#[a-f\d]{6}$/i.test(saved.color)) color.value = saved.color;
-    Object.assign(team, { name:name.value, color:color.value, crest:crestNames.includes(saved.crest) ? saved.crest : crestNames[index], logo:safeLogo(saved.logo) ? saved.logo : null });
-    paintSetupCrest(index);
-    name.addEventListener('change', () => {
-        team.name = name.value.trim() || name.defaultValue;
+const extraColors = ['#a16207', '#0f766e', '#be185d', '#475569'];
+const clubTemplates = franchiseCards.map((card, index) => ({
+    name: card.querySelector('.franchise-name').defaultValue,
+    color: card.querySelector('input[type=color]').defaultValue,
+    crest: crestNames[index]
+}));
+
+function clubIdentity(index) {
+    const base = clubTemplates[index] || {
+        name: 'Franchise ' + (index + 1),
+        color: extraColors[index - clubTemplates.length],
+        crest: crestNames[index % crestNames.length]
+    };
+    const saved = savedClubs[index] || {};
+    return {
+        name: typeof saved.name === 'string' && saved.name.trim() ? saved.name.slice(0, 20) : base.name,
+        color: /^#[a-f\d]{6}$/i.test(saved.color) ? saved.color : base.color,
+        crest: crestNames.includes(saved.crest) ? saved.crest : base.crest,
+        logo: safeLogo(saved.logo) ? saved.logo : null
+    };
+}
+
+function refreshSoloTeams() {
+    const selected = Number(soloTeam.value);
+    soloTeam.replaceChildren(...appState.teams.map((team, index) => new Option(team.name, String(index))));
+    soloTeam.value = String(Math.min(selected, appState.teams.length - 1));
+    element('soloTeamField').hidden = playStyle.value !== 'solo';
+}
+
+function syncFranchiseSetup() {
+    for (const [index, team] of appState.teams.entries()) {
+        const card = franchiseCards[index];
+        const input = card.querySelector('.franchise-name');
+        team.name = input.value.trim() || input.defaultValue;
+        input.value = team.name;
+        team.color = card.querySelector('input[type=color]').value;
+    }
+    if (new Set(appState.teams.map(team => team.name.toLowerCase())).size !== appState.teams.length) {
+        showToast('Give each franchise a different name.', 'warning');
+        return false;
+    }
+    saveClubIdentities();
+    return true;
+}
+
+function configureFranchises(count) {
+    const teams = appState.teams.slice(0, count);
+    while (teams.length < count) teams.push({ ...clubIdentity(teams.length), squad: [], purse: appState.settings.initialPurse });
+    appState.teams = teams;
+    while (franchiseCards.length < count) {
+        const card = setupTemplate.cloneNode(true);
+        const index = franchiseCards.length;
+        card.querySelector('.franchise-index').textContent = 'Franchise ' + String(index + 1).padStart(2, '0');
+        card.querySelectorAll('[data-edit-team]').forEach(button => { button.dataset.editTeam = index; });
+        card.querySelector('.name-field .sr-only').textContent = 'Franchise ' + (index + 1) + ' name';
+        card.querySelector('.franchise-name').id = 'team' + (index + 1) + 'Name';
+        card.querySelector('input[type=color]').id = 'team' + (index + 1) + 'Color';
+        card.querySelector('input[type=color]').setAttribute('aria-label', 'Franchise ' + (index + 1) + ' colour');
+        franchiseCards.push(card);
+        franchiseGrid.append(card);
+    }
+    franchiseCards.forEach((card, index) => {
+        card.hidden = index >= count;
+        if (card.hidden) return;
+        const team = teams[index];
+        const name = card.querySelector('.franchise-name');
+        name.defaultValue = clubTemplates[index]?.name || 'Franchise ' + (index + 1);
         name.value = team.name;
+        card.querySelector('input[type=color]').value = team.color;
         paintSetupCrest(index);
-        saveClubIdentities();
     });
-    color.addEventListener('input', () => { team.color = color.value; });
-    color.addEventListener('change', saveClubIdentities);
+    franchiseCount.value = String(count);
+    element('setupTeamCount').textContent = count;
+    refreshSoloTeams();
+}
+
+appState.teams.forEach((team, index) => Object.assign(team, clubIdentity(index)));
+const savedCount = readRoomPreference('boundaryClubFranchiseCount', 4);
+configureFranchises(Number.isInteger(savedCount) && savedCount >= 2 && savedCount <= 8 ? savedCount : 4);
+playStyle.value = readRoomPreference('boundaryClubPlayStyle', 'solo') === 'manual' ? 'manual' : 'solo';
+refreshSoloTeams();
+
+franchiseCount.addEventListener('change', () => {
+    if (window.multiplayer?.active) {
+        franchiseCount.value = String(appState.teams.length);
+        showToast('Set the number of franchises before creating a room.', 'warning');
+        return;
+    }
+    appState.teams.forEach((team, index) => { savedClubs[index] = { ...team }; });
+    configureFranchises(Number(franchiseCount.value));
+    saveClubIdentities();
+    storeRoomPreference('boundaryClubFranchiseCount', appState.teams.length);
 });
+playStyle.addEventListener('change', () => {
+    refreshSoloTeams();
+    storeRoomPreference('boundaryClubPlayStyle', playStyle.value);
+});
+franchiseGrid.addEventListener('input', event => {
+    if (event.target.type !== 'color') return;
+    const card = event.target.closest('.franchise-card');
+    appState.teams[franchiseCards.indexOf(card)].color = event.target.value;
+    card.style.setProperty('--team', event.target.value);
+});
+franchiseGrid.addEventListener('change', event => {
+    const card = event.target.closest('.franchise-card');
+    if (!card) return;
+    const index = franchiseCards.indexOf(card);
+    if (event.target.classList.contains('franchise-name')) {
+        const team = appState.teams[index];
+        team.name = event.target.value.trim() || event.target.defaultValue;
+        event.target.value = team.name;
+        paintSetupCrest(index);
+        refreshSoloTeams();
+    }
+    saveClubIdentities();
+});
+
+function syncFloorTeams() {
+    while (bidButtons.length < appState.teams.length) {
+        const index = bidButtons.length;
+        const button = bidButtons[0].cloneNode(true);
+        button.id = 'bidTeam' + (index + 1);
+        button.dataset.team = index;
+        const card = purseCards[0].cloneNode(true);
+        card.id = 'purseTeam' + (index + 1) + 'Info';
+        bidButtons.push(button);
+        purseCards.push(card);
+        bidButtons[0].parentElement.append(button);
+        purseCards[0].parentElement.append(card);
+    }
+    bidButtons.forEach((button, index) => {
+        button.hidden = purseCards[index].hidden = index >= appState.teams.length;
+    });
+}
+
+function isComputerTeam(index) {
+    return appState.humanTeam != null && index !== appState.humanTeam && !window.multiplayer?.active;
+}
+
+function tryComputerBid() {
+    if (appState.humanTeam == null || window.multiplayer?.active) return false;
+    const player = getCurrentPlayer();
+    if (!player || appState.phase !== 'bidding') return false;
+    const offer = nextOfferAmount(1);
+    const { initialPurse, maxSquadSize, maxOverseasPlayers } = appState.settings;
+    const overseas = player.country?.trim().toLowerCase() !== 'india';
+    const offers = appState.teams.map((team, index) => {
+        if (!isComputerTeam(index) || index === appState.highestBidder || team.purse < offer ||
+            team.squad.length >= maxSquadSize || (overseas && getOverseasCount(team) >= maxOverseasPlayers)) return null;
+        const style = Array.from(player.name).reduce((total, letter) => (total * 31 + letter.charCodeAt(0)) >>> 0, index + 1);
+        const roleCount = team.squad.filter(member => member.category === player.category).length;
+        const target = (initialPurse / Math.min(18, maxSquadSize)) * (0.7 + (style % 70) / 100);
+        const reserve = Math.max(0, Math.min(10, maxSquadSize) - team.squad.length - 1) * 20;
+        const ceiling = Math.min(team.purse - reserve, Math.max(player.basePrice, target / (1 + roleCount * 0.22)));
+        return ceiling >= offer ? { index, ceiling } : null;
+    }).filter(Boolean);
+    if (!offers.length) return false;
+    const bidder = offers[Math.floor(Math.random() * offers.length)];
+    bid(bidder.index, true);
+    return true;
+}
 
 let editingTeam = 0, logoDraft, imageRequest = 0;
 function previewLogo() {
@@ -92,7 +240,9 @@ function previewLogo() {
     document.querySelectorAll('[data-crest-choice]').forEach(button => button.setAttribute('aria-pressed', !logoDraft.logo && logoDraft.crest === button.dataset.crestChoice));
 }
 element('crestChoices').innerHTML = crestNames.map(name => '<button data-crest-choice="' + name + '">' + franchiseMark({crest:name}, 0) + '<span>' + name + '</span></button>').join('');
-document.querySelectorAll('[data-edit-team]').forEach(btn => btn.addEventListener('click', () => {
+franchiseGrid.addEventListener('click', event => {
+    const btn = event.target.closest('[data-edit-team]');
+    if (!btn) return;
     editingTeam = Number(btn.dataset.editTeam);
     logoDraft = {...appState.teams[editingTeam]};
     element('logoError').textContent = '';
@@ -100,7 +250,7 @@ document.querySelectorAll('[data-edit-team]').forEach(btn => btn.addEventListene
     element('applyLogo').disabled = false;
     previewLogo();
     element('logoModal').classList.remove('hidden');
-}));
+});
 element('crestChoices').addEventListener('click', event => {
     const button = event.target.closest('[data-crest-choice]');
     if (!button) return;
@@ -149,10 +299,10 @@ element('applyLogo').addEventListener('click', () => {
 
 let selectedBidStep = 1;
 window.selectedBidStep = 1;
-function nextOfferAmount() {
+function nextOfferAmount(steps = selectedBidStep) {
     let amount = appState.currentBid;
     if (appState.highestBidder !== null) {
-        for (let step = 0; step < selectedBidStep; step++) amount += getBidIncrement(amount);
+        for (let step = 0; step < steps; step++) amount += getBidIncrement(amount);
     }
     return amount;
 }

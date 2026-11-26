@@ -14,4 +14,4 @@ customization.md
 # Scratch and intermediate artifacts
 scratch/
 node_modules/
-
+dist/

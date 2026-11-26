@@ -246,7 +246,7 @@ npm test
 ```
 
 ### 6.3 Playing a Multiplayer Game
-1. Open `http://localhost:3000` in multiple browser windows or tabs.
+1. Open `http://localhost:3000` in multiple browser windows or tabs. Set up two to eight franchises on the host screen before creating a room. Up to eight people can play by claiming separate franchises.
 2. In Window 1 (Host):
    - Click **Multiplayer Room** on the setup screen.
    - Enter your name and click **Create Room**.
@@ -269,3 +269,14 @@ npm test
 1. **In-Memory Volatility**: Room states are held in memory. Restarting the Node process resets active rooms.
 2. **Socket Session Lifecycle**: Reconnection does not currently restore state if the browser tab is fully closed or cleared.
 3. **Public Deployment**: To play across different networks over the Internet, the Node process must be hosted on a cloud provider (e.g. Render, Railway, DigitalOcean) or tunneled via Cloudflare Tunnel / ngrok.
+
+## Host the multiplayer server
+
+The Vercel site serves the auction interface. Deploy one running Node service from the same repository to keep bids, timers and rooms together in memory.
+
+1. On Render, create a Blueprint from this repository. The included `render.yaml` runs the Node server and checks `/api/health`. For a different Node host, use `npm ci --omit=dev` and `npm start`.
+2. Set `MULTIPLAYER_ORIGINS` on the Node host to your Vercel site's exact HTTPS origin. The Blueprint already includes the current Boundary Club domain. Check that the Node service's `/api/health` returns `status: ok`.
+3. In Vercel, set the production build variable `MULTIPLAYER_SERVER_URL` to the Node service's HTTPS origin. Redeploy the frontend to apply it.
+4. Open the Vercel site in two separate browsers. Create a room in one, join from the other, claim separate teams, then start an auction and place a bid.
+
+A server restart clears active rooms. Keep one server instance for this version. A sleeping host can take longer to accept its first connection.

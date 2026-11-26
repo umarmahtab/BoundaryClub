@@ -3,20 +3,39 @@ const http = require('http');
 const path = require('path');
 const { Server } = require('socket.io');
 const { RoomManager } = require('./room-manager');
+const { teamIdentity } = require('./auction-engine');
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, {
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
+const allowedOrigins = new Set((process.env.MULTIPLAYER_ORIGINS || '')
+    .split(',').map(origin => origin.trim()).filter(Boolean));
+
+function permitsOrigin(request) {
+    const origin = request.headers.origin;
+    if (!origin || allowedOrigins.size === 0 || allowedOrigins.has(origin)) return true;
+
+    // The backend can also serve its own auction page on the same host.
+    try {
+        return new URL(origin).host === request.headers.host;
+    } catch {
+        return false;
     }
+}
+
+const io = new Server(server, {
+    cors: { origin: true, methods: ['GET', 'POST'] },
+    allowRequest: (request, callback) => callback(null, permitsOrigin(request))
 });
 
 const roomManager = new RoomManager(io);
+const root = path.join(__dirname, '..');
 
-// Serve static assets from project root
-app.use(express.static(path.join(__dirname, '..')));
+app.get(['/', '/auction', '/auction.html', '/index.html'], (req, res) => {
+    res.sendFile(path.join(root, 'index.html'));
+});
+for (const directory of ['assets', 'sounds']) {
+    app.use('/' + directory, express.static(path.join(root, directory)));
+}
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -119,14 +138,19 @@ io.on('connection', (socket) => {
             return;
         }
 
-        // Apply updated team names or settings if passed from host setup screen
-        if (data.teams && Array.isArray(data.teams) && data.teams.length === 4) {
-            data.teams.forEach((t, i) => {
-                if (t.name) room.engine.teams[i].name = t.name;
-                if (t.color) room.engine.teams[i].color = t.color;
-                if (t.crest) room.engine.teams[i].crest = t.crest;
-                if (t.logo) room.engine.teams[i].logo = t.logo;
-            });
+        if (room.engine.auctionStarted) {
+            if (typeof callback === 'function') callback({ success: false, error: 'Auction already started' });
+            return;
+        }
+        if (Array.isArray(data.teams) && data.teams.length === room.engine.teams.length) {
+            const identities = data.teams.map((team, index) => teamIdentity(team, room.engine.teams[index]));
+            if (new Set(identities.map(team => team.name.toLowerCase())).size !== identities.length) {
+                const error = 'Give each franchise a different name.';
+                if (typeof callback === 'function') callback({ success: false, error });
+                socket.emit('auction:error', { error });
+                return;
+            }
+            identities.forEach((team, index) => Object.assign(room.engine.teams[index], team));
         }
         if (data.settings) {
             Object.assign(room.engine.settings, data.settings);

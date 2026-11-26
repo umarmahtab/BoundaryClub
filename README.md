@@ -1,6 +1,6 @@
 # Boundary Club V5
 
-Run a four-franchise cricket auction from one screen. Start with 238 players and ₹100 crore per team, or bring your own player pool and set the rules for your league.
+Run a cricket auction with two to eight custom franchises. Start with 238 players and ₹100 crore per team, or bring your own player pool and set the rules for your league.
 
 **[Open the auction room](https://boundaryclubgame.vercel.app)** · [Download v5](https://github.com/umarmahtab/BoundaryClub/archive/refs/heads/v5.zip) · [Browse the v4 archive](https://github.com/umarmahtab/BoundaryClub/tree/v4)
 
@@ -8,10 +8,11 @@ Run a four-franchise cricket auction from one screen. Start with 238 players and
 
 ## Run your first auction
 
-1. **Set up the franchises.** Edit each team name and colour on the opening screen. Select **Change logo** to use one of six club crests or upload a PNG, JPG or WebP.
+1. **Set up the franchises.** Pick a team count, then edit each team name and colour on the opening screen. Select **Change logo** to use one of six club crests or upload a PNG, JPG or WebP.
 2. **Choose the rules.** Set the purse, squad size, overseas limit and retention slots. Choose a bid clock and decide whether a new bid restarts it, keeps it running, or leaves at least ten seconds.
-3. **Open the floor.** Start the auction, complete any retentions, and open a player pool. Bid with the team cards or number keys. For a jump bid, select **2×** or **5×** before choosing a team.
-4. **Close the books.** Give unsold players another round or finish the auction to see the final squads. Download a PDF scorecard or export the figures as CSV.
+3. **Choose how to play.** Pick **Solo vs computer** and choose your franchise, or select **Control all teams** for a shared-screen auction. Create a **Multiplayer Room** to have players claim separate franchises on their own devices.
+4. **Open the floor.** Start the auction, complete any retentions, and open a player pool. Bid with the team cards or number keys. For a jump bid, select **2×** or **5×** before choosing a team.
+5. **Close the books.** Give unsold players another round or finish the auction to see the final squads. Download a PDF scorecard or export the figures as CSV.
 
 ## On the bidding floor
 
@@ -56,7 +57,7 @@ Choose **Roster PDF** for a working example you can re-import. For an image-only
 
 | Key | Action |
 | --- | --- |
-| `1` – `4` | Bid for the corresponding franchise |
+| `1` – `8` | Bid for the corresponding franchise when you control it |
 | `Space` | Pause or resume the clock |
 | `S` / `N` | Sell the current player / open the next lot |
 | `R` / `U` | Restart the current lot / undo the last recorded action |

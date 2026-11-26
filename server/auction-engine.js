@@ -31,6 +31,18 @@ function getOverseasCount(team) {
     return (team.squad || []).filter(p => p.country && p.country.trim().toLowerCase() !== 'india').length;
 }
 
+function teamIdentity(source, fallback) {
+    const team = source || {};
+    const crests = ['falcon', 'knight', 'crown', 'thunder', 'tiger', 'star'];
+    return {
+        name: typeof team.name === 'string' && team.name.trim() ? team.name.trim().slice(0, 20) : fallback.name,
+        color: /^#[a-f0-9]{6}$/i.test(team.color) ? team.color : fallback.color,
+        crest: crests.includes(team.crest) ? team.crest : fallback.crest,
+        logo: typeof team.logo === 'string' && team.logo.length <= 150000 &&
+            /^data:image\/(?:png|jpeg|webp);base64,[a-z0-9+/=]+$/i.test(team.logo) ? team.logo : null
+    };
+}
+
 class AuctionEngine {
     constructor(options = {}) {
         this.onTick = options.onTick || (() => {});
@@ -60,18 +72,15 @@ class AuctionEngine {
             { name: "Thunders", color: "#a855f7", crest: "thunder", logo: null, squad: [], purse: this.settings.initialPurse }
         ];
 
-        if (Array.isArray(options.teams) && options.teams.length === 4) {
-            this.teams = options.teams.map((t, idx) => ({
-                name: t.name || defaultTeams[idx].name,
-                color: t.color || defaultTeams[idx].color,
-                crest: t.crest || defaultTeams[idx].crest,
-                logo: t.logo || null,
-                squad: [],
-                purse: this.settings.initialPurse
-            }));
-        } else {
-            this.teams = defaultTeams;
-        }
+        const teams = Array.isArray(options.teams) && options.teams.length >= 2 && options.teams.length <= 8
+            ? options.teams : defaultTeams;
+        this.teams = teams.map((team, index) => ({
+            ...teamIdentity(team, defaultTeams[index] || {
+                name: 'Franchise ' + (index + 1), color: '#64748b', crest: 'star'
+            }),
+            squad: [],
+            purse: this.settings.initialPurse
+        }));
 
         this.masterPlayerList = Array.isArray(options.playerList) && options.playerList.length > 0
             ? options.playerList
@@ -587,6 +596,7 @@ class AuctionEngine {
 
 module.exports = {
     AuctionEngine,
+    teamIdentity,
     getBidIncrement,
     calculateNextBid,
     getOverseasCount

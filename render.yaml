@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: boundaryclub-multiplayer
+    runtime: node
+    plan: free
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: MULTIPLAYER_ORIGINS
+        value: https://boundaryclubgame.vercel.app
