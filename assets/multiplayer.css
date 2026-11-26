@@ -59,17 +59,6 @@
     cursor: not-allowed;
 }
 
-.bid-team-card-btn.team-disabled {
-    opacity: 0.45;
-    filter: grayscale(0.5);
-    cursor: not-allowed;
-}
-
-.bid-team-card-btn.team-mine {
-    outline: 2px solid #a855f7;
-    outline-offset: 2px;
-}
-
 .mp-room-code-tag {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     letter-spacing: 0.1em;

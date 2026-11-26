@@ -111,8 +111,11 @@ class MultiplayerClient {
             }
             this.renderLobby();
             this.updateBadge();
-            this.applyOwnershipControls();
-            this.syncHostControls();
+            if (appState.phase === 'bidding' && this.currentPlayer) updateControls(false);
+            else {
+                this.applyOwnershipControls();
+                this.syncHostControls();
+            }
         });
 
         this.socket.on('room:error', (data) => {
@@ -461,43 +464,18 @@ class MultiplayerClient {
         }
     }
 
-    getTeamOwner(teamIdx) {
-        if (!this.roomState || !this.roomState.participants) return null;
-        return this.roomState.participants.find(p => p.teamIdx === teamIdx) || null;
-    }
-
     applyOwnershipControls() {
-        if (!this.active) return;
-        const bidButtons = document.querySelectorAll('.bid-team-card-btn');
-        if (!bidButtons || !bidButtons.length) return;
+        const floor = document.getElementById('auctionScreen');
+        const watching = this.active && this.myTeamIdx === null;
+        floor.classList.toggle('multiplayer-floor', this.active);
+        floor.classList.toggle('spectator-floor', watching);
+        document.getElementById('spectatorBidHint').hidden = !watching;
+        if (this.active) document.getElementById('biddingHeading').textContent = watching ? 'Spectating' : 'Your bid';
 
-        bidButtons.forEach((btn, tid) => {
-            const owner = this.getTeamOwner(tid);
-            const reasonEl = btn.querySelector('.team-btn-reason');
-            btn.classList.remove('team-mine', 'team-disabled');
-
-            if (this.myTeamIdx !== null) {
-                if (tid === this.myTeamIdx) {
-                    btn.classList.add('team-mine');
-                } else {
-                    btn.classList.add('team-disabled');
-                    btn.disabled = true;
-                    btn.classList.add('opacity-60', 'cursor-not-allowed');
-                    if (reasonEl) {
-                        reasonEl.innerText = owner ? `Owned by ${owner.name}` : 'Not your franchise';
-                        reasonEl.classList.remove('hidden');
-                    }
-                }
-            } else if (!this.isHost) {
-                // Spectator
-                btn.classList.add('team-disabled');
-                btn.disabled = true;
-                btn.classList.add('opacity-60', 'cursor-not-allowed');
-                if (reasonEl) {
-                    reasonEl.innerText = owner ? `Owned by ${owner.name}` : 'Spectating';
-                    reasonEl.classList.remove('hidden');
-                }
-            }
+        floor.querySelectorAll('.bid-team-card-btn').forEach(button => {
+            const otherTeam = this.active && Number(button.dataset.team) !== this.myTeamIdx;
+            button.classList.toggle('room-other-team', otherTeam);
+            if (otherTeam) button.disabled = true;
         });
     }
 
@@ -551,7 +529,7 @@ class MultiplayerClient {
 
     // --- Outgoing Auction Actions ---
     placeBid(teamIdx, step = 1) {
-        if (!this.socket || !this.active) return;
+        if (!this.socket || !this.active || this.myTeamIdx !== teamIdx) return;
         this.socket.emit('auction:bid', { teamIdx, step });
     }
 

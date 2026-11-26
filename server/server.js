@@ -210,18 +210,8 @@ io.on('connection', (socket) => {
             return;
         }
 
-        // Server-side Franchise Authority / Ownership Check:
-        // A participant can bid for teamIdx IF:
-        // 1) They are explicitly assigned to teamIdx (participant.teamIdx === teamIdx)
-        // 2) OR they are the Host and no participant is assigned to teamIdx (host acting as franchise manager for open team)
-        const teamOwner = room.participants.find(p => p.teamIdx === teamIdx);
-        const isAssigned = participant.teamIdx === teamIdx;
-        const isHostManagingUnassigned = participant.isHost && (!teamOwner || teamOwner.id === socket.id);
-
-        if (!isAssigned && !isHostManagingUnassigned) {
-            const teamName = room.engine.teams[teamIdx] ? room.engine.teams[teamIdx].name : `Team ${teamIdx + 1}`;
-            const ownerName = teamOwner ? teamOwner.name : 'another player';
-            const err = `Cannot bid for ${teamName}: controlled by ${ownerName}.`;
+        if (!Number.isInteger(teamIdx) || participant.teamIdx !== teamIdx) {
+            const err = 'Cannot bid for a franchise you have not claimed.';
             if (typeof callback === 'function') callback({ success: false, error: err });
             socket.emit('auction:error', { error: err });
             return;
